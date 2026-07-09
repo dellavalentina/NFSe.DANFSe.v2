@@ -40,4 +40,4 @@ jobs:
         user: dellavalentina
 
     - name: Push to NuGet.org
-      run: dotnet nuget push out/*.nupkg --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push out/*.nupkg --api-key ${{ env.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
