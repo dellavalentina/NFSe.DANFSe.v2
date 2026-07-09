@@ -222,5 +222,45 @@ namespace NFSe.DANFSe.v2.Helpers
             }
             return code;
         }
+
+        /// <summary>
+        /// Formata uma data/hora no padrão do XML Schema para o formato PT-BR (dd/MM/yyyy HH:mm:ss).
+        /// </summary>
+        public static string FormatDateTime(string val)
+        {
+            if (string.IsNullOrEmpty(val)) return "-";
+
+            if (DateTimeOffset.TryParse(val, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset dto))
+            {
+                return dto.ToString("dd/MM/yyyy HH:mm:ss");
+            }
+
+            if (DateTime.TryParse(val, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
+            {
+                return dt.ToString("dd/MM/yyyy HH:mm:ss");
+            }
+
+            return val;
+        }
+
+        /// <summary>
+        /// Formata uma data no padrão do XML Schema para o formato PT-BR (dd/MM/yyyy).
+        /// </summary>
+        public static string FormatDate(string val)
+        {
+            if (string.IsNullOrEmpty(val)) return "-";
+
+            if (DateTimeOffset.TryParse(val, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset dto))
+            {
+                return dto.ToString("dd/MM/yyyy");
+            }
+
+            if (DateTime.TryParse(val, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
+            {
+                return dt.ToString("dd/MM/yyyy");
+            }
+
+            return val;
+        }
     }
 }

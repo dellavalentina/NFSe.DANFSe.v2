@@ -176,10 +176,10 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText(_model.NNFSe, fontReg7, BlackBrush, 0.40, 2.65, 4.50, 0.25, LeftAlign);
 
             DrawText("COMPETÊNCIA DA NFS-E", fontBold7, BlackBrush, 5.41, 2.35, 4.50, 0.25, LeftAlign);
-            DrawText(_model.Dps.DCompet, fontReg7, BlackBrush, 5.41, 2.65, 4.50, 0.25, LeftAlign);
+            DrawText(Formatters.FormatDate(_model.Dps.DCompet), fontReg7, BlackBrush, 5.41, 2.65, 4.50, 0.25, LeftAlign);
 
             DrawText("DATA E HORA DA EMISSÃO DA NFS-E", fontBold7, BlackBrush, 10.51, 2.35, 5.00, 0.25, LeftAlign);
-            DrawText(_model.DhProc, fontReg7, BlackBrush, 10.51, 2.65, 5.00, 0.25, LeftAlign);
+            DrawText(Formatters.FormatDateTime(_model.DhProc), fontReg7, BlackBrush, 10.51, 2.65, 5.00, 0.25, LeftAlign);
 
             // Dados Básicos da DPS
             DrawText("NÚMERO DA DPS", fontBold7, BlackBrush, 0.40, 3.05, 4.50, 0.25, LeftAlign);
@@ -189,7 +189,7 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText(_model.Dps.Serie, fontReg7, BlackBrush, 5.41, 3.35, 4.50, 0.25, LeftAlign);
 
             DrawText("DATA E HORA DA EMISSÃO DA DPS", fontBold7, BlackBrush, 10.51, 3.05, 5.00, 0.25, LeftAlign);
-            DrawText(_model.Dps.DhEmi, fontReg7, BlackBrush, 10.51, 3.35, 5.00, 0.25, LeftAlign);
+            DrawText(Formatters.FormatDateTime(_model.Dps.DhEmi), fontReg7, BlackBrush, 10.51, 3.35, 5.00, 0.25, LeftAlign);
 
             // Bloco Emitente / Situação / Finalidade (Fundo Cinza)
             DrawShading(0.30, 3.67, 4.90, 0.67);
