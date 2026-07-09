@@ -36,6 +36,8 @@ jobs:
 
     - name: NuGet Login
       uses: NuGet/login@v1
+      with:
+        user: dellavalentina
 
     - name: Push to NuGet.org
       run: dotnet nuget push out/*.nupkg --source https://api.nuget.org/v3/index.json
