@@ -1,0 +1,40 @@
+name: Publicar no NuGet.org
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+
+    # Permissões cruciais exigidas para autenticação OpenID Connect (OIDC / Trusted Publishing)
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build project
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run unit tests
+      run: dotnet test --configuration Release --no-restore --verbosity normal
+
+    - name: Pack NuGet package
+      run: dotnet pack --configuration Release --no-restore -o out
+
+    - name: Push to NuGet.org
+      # Com a Publicação Confiável configurada, nenhuma API Key é necessária. 
+      # O comando detecta automaticamente o token federado do GitHub Actions.
+      run: dotnet nuget push out/*.nupkg --source https://api.nuget.org/v3/index.json

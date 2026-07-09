@@ -1,0 +1,19 @@
+## Ignore Visual Studio temporary files, build results, and user settings
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore test output directories
+Output/
+Tests/Output/
+
+## Ignore project documentation records
+Docs/
+
+## Ignore OS generated files
+.DS_Store
+Thumbs.db

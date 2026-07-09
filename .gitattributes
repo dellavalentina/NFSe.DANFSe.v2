@@ -1,0 +1,14 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Explicitly set eol to CRLF for C# source files to maintain consistency on Windows/IDE editing
+*.cs text eol=crlf
+*.csproj text eol=crlf
+*.sln text eol=crlf
+*.slnx text eol=crlf
+*.md text eol=crlf
+
+# Treat binary files as binary
+*.png binary
+*.ttf binary
+*.pdf binary

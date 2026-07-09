@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NFSe.DANFSe.v2.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/NFSe.DANFSe.v2.Tests.csproj" />
+  </Folder>
+</Solution>

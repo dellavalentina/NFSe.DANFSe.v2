@@ -1,0 +1,184 @@
+<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+  <infNFSe Id="NFS32053092100012345678900000000001882226062649460236">
+    <xLocEmi>Vitória</xLocEmi>
+    <xLocPrestacao>Vitória</xLocPrestacao>
+    <nNFSe>18822</nNFSe>
+    <cLocIncid>3205309</cLocIncid>
+    <xLocIncid>Vitória</xLocIncid>
+    <xTribNac>Serviços de registros públicos, cartorários e notariais.</xTribNac>
+    <xNBS>Serviços notariais e de registro</xNBS>
+    <verAplic>SefinNacional_1.6.0</verAplic>
+    <ambGer>2</ambGer>
+    <tpEmis>1</tpEmis>
+    <procEmi>1</procEmi>
+    <cStat>100</cStat>
+    <dhProc>2026-06-30T13:36:11-03:00</dhProc>
+    <nDFSe>6078585</nDFSe>
+    <emit>
+      <CPF>12345678909</CPF>
+      <IM>1122334</IM>
+      <xNome>PRESTADOR DE SERVICOS DUMMY LTDA</xNome>
+      <enderNac>
+        <xLgr>AVENIDA TESTE</xLgr>
+        <nro>123</nro>
+        <xCpl>SALA 100</xCpl>
+        <xBairro>BAIRRO DO DUMMY</xBairro>
+        <cMun>3205309</cMun>
+        <UF>ES</UF>
+        <CEP>29000000</CEP>
+      </enderNac>
+      <fone>27999999999</fone>
+      <email>contato@prestadordummy.com.br</email>
+    </emit>
+    <valores>
+      <tpBM>3</tpBM>
+      <vCalcBM>22.15</vCalcBM>
+      <vBC>73.90</vBC>
+      <pAliqAplic>5.00</pAliqAplic>
+      <vISSQN>3.70</vISSQN>
+      <vLiq>96.05</vLiq>
+    </valores>
+    <IBSCBS>
+      <cLocalidadeIncid>3205309</cLocalidadeIncid>
+      <xLocalidadeIncid>Vitória</xLocalidadeIncid>
+      <valores>
+        <vBC>92.35</vBC>
+        <vCalcReeRepRes>0.00</vCalcReeRepRes>
+        <uf>
+          <pIBSUF>0.10</pIBSUF>
+          <pAliqEfetUF>0.10</pAliqEfetUF>
+        </uf>
+        <mun>
+          <pIBSMun>0.00</pIBSMun>
+          <pAliqEfetMun>0.00</pAliqEfetMun>
+        </mun>
+        <fed>
+          <pCBS>0.90</pCBS>
+          <pAliqEfetCBS>0.90</pAliqEfetCBS>
+        </fed>
+      </valores>
+      <totCIBS>
+        <vTotNF>96.05</vTotNF>
+        <gIBS>
+          <vIBSTot>0.09</vIBSTot>
+          <gIBSUFTot>
+            <vIBSUF>0.09</vIBSUF>
+          </gIBSUFTot>
+          <gIBSMunTot>
+            <vIBSMun>0.00</vIBSMun>
+          </gIBSMunTot>
+        </gIBS>
+        <gCBS>
+          <vCBS>0.83</vCBS>
+        </gCBS>
+      </totCIBS>
+    </IBSCBS>
+    <DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+      <infDPS Id="DPS320530910003177862370000001000000000010799">
+        <tpAmb>1</tpAmb>
+        <dhEmi>2026-06-30T13:07:28-03:00</dhEmi>
+        <verAplic>Q-NFS-e 1.00</verAplic>
+        <serie>00001</serie>
+        <nDPS>10799</nDPS>
+        <dCompet>2026-06-30</dCompet>
+        <tpEmit>1</tpEmit>
+        <cLocEmi>3205309</cLocEmi>
+        <prest>
+          <CPF>12345678909</CPF>
+          <IM>1122334</IM>
+          <fone>27999999999</fone>
+          <email>contato@prestadordummy.com.br</email>
+          <regTrib>
+            <opSimpNac>1</opSimpNac>
+            <regEspTrib>0</regEspTrib>
+          </regTrib>
+        </prest>
+        <serv>
+          <locPrest>
+            <cLocPrestacao>3205309</cLocPrestacao>
+          </locPrest>
+          <cServ>
+            <cTribNac>210101</cTribNac>
+            <xDescServ>Prestação de serviços de testes automatizados e validações de layouts de documentos eletrônicos.</xDescServ>
+            <cNBS>113040000</cNBS>
+          </cServ>
+        </serv>
+        <valores>
+          <vServPrest>
+            <vServ>96.05</vServ>
+          </vServPrest>
+          <trib>
+            <tribMun>
+              <tribISSQN>1</tribISSQN>
+              <BM>
+                <nBM>32053090200020</nBM>
+                <vRedBCBM>22.15</vRedBCBM>
+              </BM>
+              <tpRetISSQN>1</tpRetISSQN>
+            </tribMun>
+            <totTrib>
+              <pTotTrib>
+                <pTotTribFed>0.00</pTotTribFed>
+                <pTotTribEst>0.00</pTotTribEst>
+                <pTotTribMun>5.00</pTotTribMun>
+              </pTotTrib>
+            </totTrib>
+          </trib>
+        </valores>
+        <IBSCBS>
+          <finNFSe>0</finNFSe>
+          <cIndOp>030101</cIndOp>
+          <indDest>0</indDest>
+          <valores>
+            <trib>
+              <gIBSCBS>
+                <CST>000</CST>
+                <cClassTrib>000001</cClassTrib>
+              </gIBSCBS>
+            </trib>
+          </valores>
+        </IBSCBS>
+      </infDPS>
+      <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <SignedInfo>
+          <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+          <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+          <Reference URI="#DPS320530910003177862370000001000000000010799">
+            <Transforms>
+              <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+              <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+            </Transforms>
+            <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+            <DigestValue>EKDtyi3GQylHpSvhBtJCAqXbn7Je9fslXHxSQKdcO7o=</DigestValue>
+          </Reference>
+        </SignedInfo>
+        <SignatureValue>cfo8FwCcHCgDMQPP8Lxqyj+ei3hcxMLSIASxiMz3yNypWqHu3M22zDGcmdIIwHpRNC+N8oQOrLSa4B6jVGd2KMb9WorFHtV6w8MBe2FNgPAitkPLQPpatyREw8sNMLJJtLnQnthBO0OTuJAB33tKnkqUM69nzGagJzOg8vflx3AEILKJDk8Zy5hJ3dECoKThWh5qP3c2K59rIExT5ExQEHN/bPWgGUBZ3225Nc77W+9PQfjqkSat8wv/yQD1MTTUA5kRxqG3WqwZawvCvwqaCuPI0BUC9R63KQbWWJNaeDzps81tHMJDYVoQuM8RomuPmhF5BoQxXmURgNNU+20y9g==</SignatureValue>
+        <KeyInfo>
+          <X509Data>
+            <X509Certificate>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</X509Certificate>
+          </X509Data>
+        </KeyInfo>
+      </Signature>
+    </DPS>
+  </infNFSe>
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments" />
+      <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+      <Reference URI="#NFS32053092100012345678900000000001882226062649460236">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments" />
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+        <DigestValue>3TPB8eWhinE1ZKqw+XyBTSK8EojsIGYnypORON2LMeg=</DigestValue>
+      </Reference>
+    </SignedInfo>
+    <SignatureValue>c29tZSBkdW1teSBzaWduYXR1cmUgdmFsdWU=</SignatureValue>
+    <KeyInfo>
+      <X509Data>
+        <X509Certificate>c29tZSBkdW1teSBjZXJ0aWZpY2F0ZSB2YWx1ZQ==</X509Certificate>
+      </X509Data>
+    </KeyInfo>
+  </Signature>
+</NFSe>
