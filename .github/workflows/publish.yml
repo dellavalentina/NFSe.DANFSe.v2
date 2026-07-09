@@ -34,7 +34,8 @@ jobs:
     - name: Pack NuGet package
       run: dotnet pack --configuration Release --no-restore -o out
 
+    - name: NuGet Login
+      uses: NuGet/login@v1
+
     - name: Push to NuGet.org
-      # Com a Publicação Confiável configurada, nenhuma API Key é necessária. 
-      # O comando detecta automaticamente o token federado do GitHub Actions.
       run: dotnet nuget push out/*.nupkg --source https://api.nuget.org/v3/index.json
