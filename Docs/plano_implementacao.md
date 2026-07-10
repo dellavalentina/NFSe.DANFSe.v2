@@ -6,6 +6,9 @@ Este documento registra a evolução e o detalhamento técnico de todas as fases
 
 ## Índice de Releases e Fases
 
+### [Release v0.1.2] - 2026-07-09 (Ajuste de Nomenclatura e Versão)
+- [Fase X: Ajuste de Terminologia para Biblioteca/Pacote](#fase-x-ajuste-de-terminologia-para-bibliotecapacote-release-v012)
+
 ### [Release v0.1.1] - 2026-07-09 (Ajuste de Formatação e Patch Release)
 - [Fase IX: Ajuste de Formatação de Data/Hora para PT-BR](#fase-ix-ajuste-de-formatacao-de-datahora-para-pt-br-release-v011)
 
@@ -18,6 +21,18 @@ Este documento registra a evolução e o detalhamento técnico de todas as fases
 - [Fase VI: Higienização de Dados e Portabilidade de Testes](#fase-vi-higienizacao-de-dados-e-portabilidade-de-testes)
 - [Fase VII: Parâmetros de Customização e Marca d'Água de Teste](#fase-vii-parametros-de-customizacao-e-marca-dagua-de-teste)
 - [Fase VIII: Reorganização de Pastas, Namespaces e Nomenclatura (Refactoring Principal)](#fase-viii-reorganizacao-de-pastas-namespaces-e-nomenclatura-refactoring-principal)
+
+---
+
+## Release v0.1.2 - 2026-07-09
+
+### Fase X: Ajuste de Terminologia para Biblioteca/Pacote (Release v0.1.2)
+* **Objetivo**: Padronizar as referências a "Componente" para "Biblioteca" ou "Pacote" nas configurações do projeto, documentação e logs internos, e atualizar a versão para `0.1.2`.
+* **Ações Executadas**:
+  * **Configurações do Projeto**: Atualização da descrição do pacote NuGet e alteração da tag `<Version>` para `0.1.2` em [NFSe.DANFSe.v2.csproj](file:///d:/__Projetos_Qualidata_SVN/sistemas-fontes/NotaFiscalEletronica/NFSe.DANFSe.v2/src/NFSe.DANFSe.v2.csproj).
+  * **Documentação**: Atualização do badge de versão no [README.md](file:///d:/__Projetos_Qualidata_SVN/sistemas-fontes/NotaFiscalEletronica/NFSe.DANFSe.v2/README.md) e divisão clara das alterações entre `0.1.1` e `0.1.2` no [CHANGELOG.md](file:///d:/__Projetos_Qualidata_SVN/sistemas-fontes/NotaFiscalEletronica/NFSe.DANFSe.v2/CHANGELOG.md).
+  * **Rastreamento de Logs**: Atualização do prefixo do logger interno para `[NFSe.DANFSe.v2]` em [DanfsePdfRenderer.cs](file:///d:/__Projetos_Qualidata_SVN/sistemas-fontes/NotaFiscalEletronica/NFSe.DANFSe.v2/src/Rendering/DanfsePdfRenderer.cs) para coincidir com a nomenclatura final do assembly.
+  * **Validação**: Execução bem-sucedida de `dotnet clean`, `dotnet build` e de todos os 18 testes automatizados via `dotnet test`.
 
 ---
 

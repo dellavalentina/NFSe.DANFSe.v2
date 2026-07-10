@@ -3,9 +3,9 @@
 [![Build & Test](https://img.shields.io/badge/.NET-6.0-blue.svg)](https://dotnet.microsoft.com/download)
 [![Library](https://img.shields.io/badge/PDFsharp-6.1-orange.svg)](https://www.pdfsharp.com)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![Version](https://img.shields.io/badge/Version-0.1.1-green.svg)](#)
+[![Version](https://img.shields.io/badge/Version-0.1.2-green.svg)](#)
 
-Componente em **.NET 6 / C#** para geração do **DANFSe (Documento Auxiliar da Nota Fiscal de Serviço Eletrônica)** em formato PDF. Este componente foi desenvolvido em conformidade estrita com as especificações visuais e regras de negócio da **Nota Técnica SE/CGNFS-e nº 008**.
+Biblioteca em **.NET 6 / C#** para geração do **DANFSe (Documento Auxiliar da Nota Fiscal de Serviço Eletrônica)** em formato PDF. Esta biblioteca foi desenvolvida em conformidade estrita com as especificações visuais e regras de negócio da **Nota Técnica SE/CGNFS-e nº 008**.
 
 ---
 
@@ -70,7 +70,7 @@ NFSe.DANFSe.v2/
 ## 🛠️ Como Instalar e Configurar
 
 ### Instalação via NuGet
-Para adicionar o componente ao seu projeto, execute o comando abaixo no terminal do seu projeto:
+Para adicionar o pacote ao seu projeto, execute o comando abaixo no terminal do seu projeto:
 ```bash
 dotnet add package NFSe.DANFSe.v2
 ```
@@ -85,7 +85,7 @@ dotnet build
 
 ## ⚡ Exemplo de Utilização
 
-O componente recebe como entrada o modelo populado `DanfseModel`, o array de bytes da logomarca do prestador (opcional) e uma flag para forçar marca d'água de teste (opcional):
+A biblioteca recebe como entrada o modelo populado `DanfseModel`, o array de bytes da logomarca do prestador (opcional) e uma flag para forçar marca d'água de teste (opcional):
 
 ```csharp
 using System.IO;

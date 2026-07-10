@@ -5,11 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Adriano Della</Authors>
     <PackageId>NFSe.DANFSe.v2</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Componente .NET para geração de DANFSe em PDF (Nota Técnica 008)</Description>
+    <Description>Biblioteca .NET para geração de DANFSe em PDF (Nota Técnica 008)</Description>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageTags>nfse;danfse;pdf;sped;nota-fiscal;danfe</PackageTags>
     <RepositoryType>git</RepositoryType>

@@ -746,7 +746,7 @@ namespace NFSe.DANFSe.v2.Rendering
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine($"[NFSe.Componente.v2] Erro ao desenhar logotipo no PDF: {ex.Message}");
+                System.Diagnostics.Trace.WriteLine($"[NFSe.DANFSe.v2] Erro ao desenhar logotipo no PDF: {ex.Message}");
             }
         }
 
