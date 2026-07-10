@@ -3,14 +3,8 @@ name: .NET CI
 on:
   push:
     branches: [ main, master ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ main, master ]
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   build-and-test:
@@ -33,16 +27,3 @@ jobs:
 
     - name: Run unit tests
       run: dotnet test --configuration Release --no-restore --verbosity normal
-
-    - name: NuGet Login
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: NuGet/login@v1
-      id: login
-      with:
-        user: dellavalentina
-
-    - name: Publish NuGet package
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: |
-        dotnet pack src/NFSe.DANFSe.v2.csproj --configuration Release --output out
-        dotnet nuget push out/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

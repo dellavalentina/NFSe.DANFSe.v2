@@ -3,6 +3,9 @@ name: Publicar no NuGet.org
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-test-publish:
