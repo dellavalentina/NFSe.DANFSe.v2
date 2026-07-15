@@ -137,5 +137,26 @@ namespace NFSe.DANFSe.v2.Tests
             Assert.True(File.Exists(pdfOutputPath));
             Console.WriteLine($"PDF de nota substituída gerado em: {pdfOutputPath}");
         }
+
+        [Fact]
+        public void TestGenerateDanfseTerceiros()
+        {
+            string xmlPath = Path.Combine(SamplesPath, "danfse-terceiros.xml");
+            Assert.True(File.Exists(xmlPath));
+
+            string xmlContent = File.ReadAllText(xmlPath);
+            DanfseModel model = DanfseXmlParser.Parse(xmlContent);
+
+            byte[]? logoBytes = null;
+
+            byte[] pdfBytes = DanfsePdfRenderer.GeneratePdf(model, logoBytes);
+            Assert.NotEmpty(pdfBytes);
+
+            string pdfOutputPath = Path.Combine(OutputPath, $"{model.NNFSe}-danfse-terceiros.pdf");
+            SafeWriteAllBytes(pdfOutputPath, pdfBytes);
+
+            Assert.True(File.Exists(pdfOutputPath));
+            Console.WriteLine($"PDF de nota terceiros gerado em: {pdfOutputPath}");
+        }
     }
 }
