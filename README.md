@@ -3,7 +3,7 @@
 [![Build & Test](https://img.shields.io/badge/.NET-6.0-blue.svg)](https://dotnet.microsoft.com/download)
 [![Library](https://img.shields.io/badge/PDFsharp-6.1-orange.svg)](https://www.pdfsharp.com)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![Version](https://img.shields.io/badge/Version-0.1.2-green.svg)](#)
+[![Version](https://img.shields.io/badge/Version-0.1.3-green.svg)](#)
 
 Biblioteca em **.NET 6 / C#** para geração do **DANFSe (Documento Auxiliar da Nota Fiscal de Serviço Eletrônica)** em formato PDF. Esta biblioteca foi desenvolvida em conformidade estrita com as especificações visuais e regras de negócio da **Nota Técnica SE/CGNFS-e nº 008**.
 
@@ -58,6 +58,7 @@ NFSe.DANFSe.v2/
 │   │   ├── danfse-normal.xml              # XML higienizado com dados de teste
 │   │   ├── danfse-cancelamento.xml        # XML higienizado com evento de cancelamento
 │   │   ├── danfse-substituida.xml         # XML higienizado com evento de substituição
+│   │   ├── danfse-terceiros.xml           # XML higienizado com dados de nota emitida por terceiros
 │   │   └── logo-alternative.png           # Logotipo abstrato gerado para testes locais
 │   ├── XmlParserTests.cs                  # Testes do leitor e processador do XML da NFS-e
 │   └── DanfseGenerationTests.cs           # Testes de geração do PDF a partir dos Samples relativos
