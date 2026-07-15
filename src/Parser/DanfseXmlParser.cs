@@ -227,10 +227,34 @@ namespace NFSe.DANFSe.v2.Parser
                 p.Documento = GetElementValue(elem, ns + "CPF");
             }
 
+            // Estrutura 1 (emit/toma no infNFSe): <enderNac> é filho direto
             var ender = elem.Element(ns + "enderNac");
             if (ender != null)
             {
                 p.Endereco = ParseEndereco(ender, ns);
+            }
+            else
+            {
+                // Estrutura 2 (toma/dest/interm no DPS): <end> contém <endNac> + campos de logradouro
+                var endElem = elem.Element(ns + "end");
+                if (endElem != null)
+                {
+                    var endNac = endElem.Element(ns + "endNac");
+                    p.Endereco = new Endereco
+                    {
+                        // Campos do <endNac>: cMun e CEP (TCEnderNac no schema)
+                        // xMun e UF não existem em TCEnderNac; xMun é derivado via IbgeResolver no renderer
+                        CMun = endNac != null ? GetElementValue(endNac, ns + "cMun") : string.Empty,
+                        XMun = string.Empty,
+                        UF = string.Empty,
+                        CEP = endNac != null ? GetElementValue(endNac, ns + "CEP") : string.Empty,
+                        // Campos de logradouro que ficam em <end> (fora do <endNac>)
+                        Logradouro = GetElementValue(endElem, ns + "xLgr"),
+                        Numero = GetElementValue(endElem, ns + "nro"),
+                        Complemento = GetElementValue(endElem, ns + "xCpl"),
+                        Bairro = GetElementValue(endElem, ns + "xBairro")
+                    };
+                }
             }
 
             return p;
@@ -245,7 +269,8 @@ namespace NFSe.DANFSe.v2.Parser
                 Complemento = GetElementValue(elem, ns + "xCpl"),
                 Bairro = GetElementValue(elem, ns + "xBairro"),
                 CMun = GetElementValue(elem, ns + "cMun"),
-                XMun = GetElementValue(elem, ns + "xMun"),
+                // xMun não existe em TCEnderecoEmitente no schema; será derivado via IbgeResolver no renderer
+                XMun = string.Empty,
                 UF = GetElementValue(elem, ns + "UF"),
                 CEP = GetElementValue(elem, ns + "CEP")
             };
@@ -283,12 +308,14 @@ namespace NFSe.DANFSe.v2.Parser
             var data = new ServicoData
             {
                 CLocPrestacao = locPrest != null ? GetElementValue(locPrest, ns + "cLocPrestacao") : string.Empty,
-                XMunPrestacao = locPrest != null ? GetElementValue(locPrest, ns + "xMun") : string.Empty,
+                // xMun e CEP não existem em TCLocPrest no schema; o nome do município é derivado via IbgeResolver
+                XMunPrestacao = string.Empty,
                 CPaisPrestacao = locPrest != null ? GetElementValue(locPrest, ns + "cPaisPrestacao") : string.Empty,
-                CepPrestacao = locPrest != null ? GetElementValue(locPrest, ns + "CEP") : string.Empty,
+                CepPrestacao = string.Empty,
 
                 CObra = obra != null ? GetElementValue(obra, ns + "cObra") : string.Empty,
-                Art = obra != null ? GetElementValue(obra, ns + "art") : string.Empty,
+                // 'art' não existe em TCInfoObra no schema v1.01
+                Art = string.Empty,
 
                 CTribNac = cServ != null ? GetElementValue(cServ, ns + "cTribNac") : string.Empty,
                 CTribMun = cServ != null ? GetElementValue(cServ, ns + "cTribMun") : string.Empty,
@@ -327,9 +354,12 @@ namespace NFSe.DANFSe.v2.Parser
                     data.VRetCp = GetElementValue(tribFed, ns + "vRetCP");
                     data.VRetCsll = GetElementValue(tribFed, ns + "vRetCSLL");
 
-                    var pisCofins = tribFed.Element(ns + "pisCofins");
+                    var pisCofins = tribFed.Element(ns + "piscofins");
                     if (pisCofins != null)
                     {
+                        data.VBCPisCofins = GetElementValue(pisCofins, ns + "vBCPisCofins");
+                        data.PAliqPis = GetElementValue(pisCofins, ns + "pAliqPis");
+                        data.PAliqCofins = GetElementValue(pisCofins, ns + "pAliqCofins");
                         data.VPis = GetElementValue(pisCofins, ns + "vPis");
                         data.VCofins = GetElementValue(pisCofins, ns + "vCofins");
                         data.TpRetPisCofins = GetElementValue(pisCofins, ns + "tpRetPisCofins");

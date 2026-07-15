@@ -173,6 +173,9 @@ namespace NFSe.DANFSe.v2.Models
         public string VRetIrrf { get; set; } = string.Empty;
         public string VRetCp { get; set; } = string.Empty;
         public string VRetCsll { get; set; } = string.Empty;
+        public string VBCPisCofins { get; set; } = string.Empty; // Base de cálculo PIS/COFINS
+        public string PAliqPis { get; set; } = string.Empty;     // Alíquota PIS
+        public string PAliqCofins { get; set; } = string.Empty;  // Alíquota COFINS
         public string VPis { get; set; } = string.Empty;
         public string VCofins { get; set; } = string.Empty;
         public string TpRetPisCofins { get; set; } = string.Empty;

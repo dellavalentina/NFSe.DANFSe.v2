@@ -120,12 +120,18 @@ namespace NFSe.DANFSe.v2.Rendering
             { "Trib.IssqnApurado", new FieldMetadata { XOffset = 15.62, YOffset = 2.01, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "ISSQN Apurado" } },
 
             // --- 9. TRIBUTOS FEDERAIS (Relativos) ---
-            { "Fed.IRRF", new FieldMetadata { XOffset = 5.41, YOffset = 0.07, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "IRRF" } },
-            { "Fed.CP", new FieldMetadata { XOffset = 10.51, YOffset = 0.07, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Contribuição Previdenciária - Retida" } },
-            { "Fed.CSLL", new FieldMetadata { XOffset = 15.62, YOffset = 0.07, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Contribuições Sociais - Retidas" } },
-            { "Fed.PIS", new FieldMetadata { XOffset = 0.40, YOffset = 0.72, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "PIS - Débito Apuração Própria" } },
-            { "Fed.COFINS", new FieldMetadata { XOffset = 5.41, YOffset = 0.72, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "COFINS - Débito Apuração Própria" } },
-            { "Fed.RetPisCofins", new FieldMetadata { XOffset = 10.51, YOffset = 0.72, Width = 9.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Descrição Contrib. Sociais - Retidas" } }
+            // Linha 1: BC PIS/COFINS, Alíquota PIS, Alíquota COFINS
+            { "Fed.VBCPisCofins", new FieldMetadata { XOffset = 5.41, YOffset = 0.07, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "BC PIS/COFINS" } },
+            { "Fed.AliqPis", new FieldMetadata { XOffset = 10.51, YOffset = 0.07, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Alíquota PIS (%)" } },
+            { "Fed.AliqCofins", new FieldMetadata { XOffset = 15.62, YOffset = 0.07, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Alíquota COFINS (%)" } },
+            // Linha 2: IRRF, CP, CSLL
+            { "Fed.IRRF", new FieldMetadata { XOffset = 5.41, YOffset = 0.72, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "IRRF" } },
+            { "Fed.CP", new FieldMetadata { XOffset = 10.51, YOffset = 0.72, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Contribuição Previdenciária - Retida" } },
+            { "Fed.CSLL", new FieldMetadata { XOffset = 15.62, YOffset = 0.72, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Contribuições Sociais - Retidas" } },
+            // Linha 3: PIS, COFINS, RetPisCofins
+            { "Fed.PIS", new FieldMetadata { XOffset = 0.40, YOffset = 1.37, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "PIS - Débito Apuração Própria" } },
+            { "Fed.COFINS", new FieldMetadata { XOffset = 5.41, YOffset = 1.37, Width = 4.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "COFINS - Débito Apuração Própria" } },
+            { "Fed.RetPisCofins", new FieldMetadata { XOffset = 10.51, YOffset = 1.37, Width = 9.50, Height = 0.25, Alignment = LayoutAlignment.Left, Label = "Descrição Contrib. Sociais - Retidas" } }
         };
     }
 }

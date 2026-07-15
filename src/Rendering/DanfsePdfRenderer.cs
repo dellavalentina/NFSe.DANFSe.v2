@@ -372,12 +372,10 @@ namespace NFSe.DANFSe.v2.Rendering
             {
                 localPrest = IbgeResolver.GetCityName(_model.Servico.CLocPrestacao);
             }
-            if (string.IsNullOrEmpty(localPrest))
-            {
-                localPrest = _model.Servico.CLocPrestacao;
-            }
+
             if (!string.IsNullOrEmpty(localPrest) && localPrest != "-")
             {
+                // Código IBGE resolvido: acrescenta UF e opcionalmente País
                 string ufPrest = Formatters.GetUfFromIbge(_model.Servico.CLocPrestacao);
                 if (!string.IsNullOrEmpty(ufPrest))
                 {
@@ -386,6 +384,23 @@ namespace NFSe.DANFSe.v2.Rendering
                 if (!string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) && _model.Servico.CPaisPrestacao != "1058")
                 {
                     localPrest += " / " + _model.Servico.CPaisPrestacao;
+                }
+            }
+            else if (!string.IsNullOrEmpty(_model.Servico.CLocPrestacao))
+            {
+                // Código de localidade especial (estrangeiro ou não-IBGE): exibe o código com contexto
+                string ufPrest = Formatters.GetUfFromIbge(_model.Servico.CLocPrestacao);
+                if (!string.IsNullOrEmpty(ufPrest))
+                {
+                    localPrest = $"Cód. {_model.Servico.CLocPrestacao} / {ufPrest}";
+                }
+                else
+                {
+                    localPrest = $"Cód. {_model.Servico.CLocPrestacao}";
+                }
+                if (!string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) && _model.Servico.CPaisPrestacao != "1058")
+                {
+                    localPrest += " / País: " + _model.Servico.CPaisPrestacao;
                 }
             }
             else
@@ -486,6 +501,17 @@ namespace NFSe.DANFSe.v2.Rendering
 
             DrawText("TRIBUTAÇÃO FEDERAL (EXCETO CBS)", fontBold7, BlackBrush, 0.40, currentY + 0.07, 4.50, 0.25, LeftAlign);
 
+            // Linha 1: BC PIS/COFINS e Alíquotas
+            string bcPisCofins = string.IsNullOrEmpty(_model.Servico.VBCPisCofins) ? "-" : Formatters.FormatCurrency(_model.Servico.VBCPisCofins);
+            DrawMetadataField("Fed.VBCPisCofins", bcPisCofins, currentY);
+
+            string aliqPis = string.IsNullOrEmpty(_model.Servico.PAliqPis) ? "-" : _model.Servico.PAliqPis;
+            DrawMetadataField("Fed.AliqPis", aliqPis, currentY);
+
+            string aliqCofins = string.IsNullOrEmpty(_model.Servico.PAliqCofins) ? "-" : _model.Servico.PAliqCofins;
+            DrawMetadataField("Fed.AliqCofins", aliqCofins, currentY);
+
+            // Linha 2: IRRF, CP, CSLL
             string irrf = string.IsNullOrEmpty(_model.Servico.VRetIrrf) ? "-" : Formatters.FormatCurrency(_model.Servico.VRetIrrf);
             DrawMetadataField("Fed.IRRF", irrf, currentY);
 
@@ -495,7 +521,7 @@ namespace NFSe.DANFSe.v2.Rendering
             string csll = string.IsNullOrEmpty(_model.Servico.VRetCsll) ? "-" : Formatters.FormatCurrency(_model.Servico.VRetCsll);
             DrawMetadataField("Fed.CSLL", csll, currentY);
 
-            // Linha 2
+            // Linha 3: PIS, COFINS, Descrição Retenção
             string pis = string.IsNullOrEmpty(_model.Servico.VPis) ? "-" : Formatters.FormatCurrency(_model.Servico.VPis);
             DrawMetadataField("Fed.PIS", pis, currentY);
 
@@ -504,7 +530,7 @@ namespace NFSe.DANFSe.v2.Rendering
 
             DrawMetadataField("Fed.RetPisCofins", Formatters.FormatRetPisCofins(_model.Servico.TpRetPisCofins), currentY);
 
-            currentY += 1.30;
+            currentY += 1.95;
 
             // ----------------------------------------------------------------------
             // 10. TRIBUTAÇÃO IBS / CBS

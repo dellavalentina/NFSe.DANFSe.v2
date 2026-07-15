@@ -207,8 +207,9 @@ namespace NFSe.DANFSe.v2.Helpers
         {
             return code switch
             {
-                "1" => "PIS/COFINS/CSLL Não Retido",
-                "2" => "Retido pelo Tomador",
+                "0" => "PIS/COFINS - Não Retido",
+                "1" => "PIS/COFINS/CSLL - Retido pelo Tomador",
+                "2" => "PIS/COFINS/CSLL - Não Retido",
                 _ => string.IsNullOrEmpty(code) ? "-" : code
             };
         }
