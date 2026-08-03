@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
     <Authors>Adriano Della</Authors>
     <PackageId>NFSe.DANFSe.v2</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="PDFsharp" Version="6.1.1" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>

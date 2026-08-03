@@ -263,5 +263,47 @@ namespace NFSe.DANFSe.v2.Helpers
 
             return val;
         }
+
+        /// <summary>
+        /// Formata o tipo de emitente da NFS-e (1 = Prestador, 2 = Tomador, 3 = Intermediário).
+        /// </summary>
+        public static string FormatTpEmit(string code)
+        {
+            return code switch
+            {
+                "1" => "1 - Prestador",
+                "2" => "2 - Tomador",
+                "3" => "3 - Intermediário",
+                _ => string.IsNullOrEmpty(code) ? "1 - Prestador" : code
+            };
+        }
+
+        /// <summary>
+        /// Formata o indicador de operação e dados de localidade para o bloco IBS/CBS conforme NT-008.
+        /// Exemplo: "01 / 3205309 / Vitória / ES" ou "Vitória / ES"
+        /// </summary>
+        public static string FormatIbsCbsIndOp(string cIndOp, string cLocIncid, string xLocIncid, string uf)
+        {
+            var parts = new System.Collections.Generic.List<string>();
+
+            if (!string.IsNullOrEmpty(cIndOp))
+            {
+                parts.Add(cIndOp);
+            }
+
+            if (!string.IsNullOrEmpty(cLocIncid))
+            {
+                parts.Add(cLocIncid);
+            }
+
+            string munUf = FormatMunUf(xLocIncid, cLocIncid, uf);
+            if (!string.IsNullOrEmpty(munUf) && munUf != "-")
+            {
+                parts.Add(munUf);
+            }
+
+            if (parts.Count == 0) return "-";
+            return string.Join(" / ", parts);
+        }
     }
 }

@@ -144,6 +144,7 @@ namespace NFSe.DANFSe.v2.Models
         public string Serie { get; set; } = string.Empty;
         public string NDPS { get; set; } = string.Empty;
         public string DCompet { get; set; } = string.Empty;
+        public string TpEmit { get; set; } = string.Empty;
     }
 
     public class ServicoData

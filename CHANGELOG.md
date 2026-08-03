@@ -1,5 +1,16 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.1.4] - 2026-08-03
+### Adicionado
+- **Reforma Tributária / Resiliência de Totais (`autoFixInconsistentTotal`)**: Adicionada opção configurável e algoritmo de verificação inteligente anti-duplicidade em `DanfsePdfRenderer.GeneratePdf`. Quando ativada, se o XML da SEFIN Nacional omitir o imposto cobrado por fora na tag `<vTotNF>` (igualando-o ao valor líquido `vLiq`), o DANFSe exibe o valor total corrigido (`vLiq + vIBS + vCBS`). Se o XML já estiver correto, o valor original é mantido sem nenhuma duplicidade de cálculo.
+- **Model / Parser — `tpEmit`**: Adicionada propriedade `TpEmit` em `DpsData` e suporte no `DanfseXmlParser` para leitura da tag `<tpEmit>` da DPS.
+- **Formatters — `FormatTpEmit` & `FormatIbsCbsIndOp`**: Adicionados formatadores para conversão por extenso de emitente (`"1 - Prestador"`, `"2 - Tomador"`, `"3 - Intermediário"`) e concatenação completa de `cIndOp` / `cLocalidadeIncid` no bloco IBS/CBS.
+
+### Corrigido
+- **Renderização — Bloco Emitente da NFS-e**: Corrigida omissão visual do valor da célula `EMITENTE DA NFS-E` no cabeçalho do documento auxiliar.
+- **Renderização — Indicador de País (ISO BR)**: Atualizada a formatação dos locais de prestação e incidência do ISSQN para incluir o código de país ISO (`BR`) nas operações em território nacional, conforme os exemplos da NT-008.
+- **Testes Unitários**: Adicionados testes unitários e de integração cobrindo os novos formatadores e as 3 variações de cálculo da flag `autoFixInconsistentTotal`.
+
 ## [0.1.3] - 2026-07-15
 ### Corrigido
 - **Parser — Endereço do Tomador/Destinatário/Intermediário**: `ParseParty()` agora reconhece corretamente a estrutura `<end>/<endNac>` utilizada pelo DPS (além da estrutura `<enderNac>` direta do `infNFSe`). Os campos de logradouro (`xLgr`, `nro`, `xCpl`, `xBairro`) estão em `<end>`, enquanto `cMun` e `CEP` estão em `<end>/<endNac>`. Anteriormente, nenhum dado de endereço do Tomador era lido.

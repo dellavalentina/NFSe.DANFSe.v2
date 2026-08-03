@@ -18,6 +18,7 @@ namespace NFSe.DANFSe.v2.Rendering
         private readonly PdfPage _page;
         private readonly XGraphics _gfx;
         private readonly bool _forceTestWatermark;
+        private readonly bool _autoFixInconsistentTotal;
 
         // Fontes Padrão
         private readonly XFont fontReg9;
@@ -44,11 +45,12 @@ namespace NFSe.DANFSe.v2.Rendering
         private static readonly XStringFormat CenterAlign = new XStringFormat { Alignment = XStringAlignment.Center, LineAlignment = XLineAlignment.Center };
         private static readonly XStringFormat RightAlign = new XStringFormat { Alignment = XStringAlignment.Far, LineAlignment = XLineAlignment.Center };
 
-        private DanfsePdfRenderer(DanfseModel model, byte[]? logoBytes, bool forceTestWatermark)
+        private DanfsePdfRenderer(DanfseModel model, byte[]? logoBytes, bool forceTestWatermark, bool autoFixInconsistentTotal = false)
         {
             _model = model;
             _logoBytes = logoBytes;
             _forceTestWatermark = forceTestWatermark;
+            _autoFixInconsistentTotal = autoFixInconsistentTotal;
 
             // Garante que o FontResolver customizado está registrado
             EmbeddedFontResolver.Register();
@@ -69,9 +71,10 @@ namespace NFSe.DANFSe.v2.Rendering
             fontBold6 = new XFont("LiberationSans", 6, XFontStyleEx.Bold);
         }
 
-        public static byte[] GeneratePdf(DanfseModel model, byte[]? logoBytes = null, bool forceTestWatermark = false)
+        public static byte[] GeneratePdf(DanfseModel model, byte[]? logoBytes = null, bool forceTestWatermark = false, bool? autoFixInconsistentTotal = null)
         {
-            var renderer = new DanfsePdfRenderer(model, logoBytes, forceTestWatermark);
+            bool shouldAutoFix = autoFixInconsistentTotal ?? DanfseConfig.AutoFixInconsistentTotal;
+            var renderer = new DanfsePdfRenderer(model, logoBytes, forceTestWatermark, shouldAutoFix);
             renderer.Render();
 
             using (var stream = new MemoryStream())
@@ -197,6 +200,7 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText("SITUAÇÃO DA NFS-E", fontBold7, BlackBrush, 5.41, 3.72, 4.50, 0.25, LeftAlign);
             DrawText("FINALIDADE", fontBold7, BlackBrush, 10.51, 3.72, 5.00, 0.25, LeftAlign);
 
+            DrawText(Formatters.FormatTpEmit(_model.Dps.TpEmit), fontReg7, BlackBrush, 0.40, 4.02, 4.50, 0.25, LeftAlign);
             DrawText("1 - Normal", fontReg7, BlackBrush, 5.41, 4.02, 4.50, 0.25, LeftAlign);
             DrawText("1 - Normal", fontReg7, BlackBrush, 10.51, 4.02, 5.00, 0.25, LeftAlign);
 
@@ -381,10 +385,8 @@ namespace NFSe.DANFSe.v2.Rendering
                 {
                     localPrest += " / " + ufPrest;
                 }
-                if (!string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) && _model.Servico.CPaisPrestacao != "1058")
-                {
-                    localPrest += " / " + _model.Servico.CPaisPrestacao;
-                }
+                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "BR" : _model.Servico.CPaisPrestacao;
+                localPrest += " / " + pais;
             }
             else if (!string.IsNullOrEmpty(_model.Servico.CLocPrestacao))
             {
@@ -398,10 +400,8 @@ namespace NFSe.DANFSe.v2.Rendering
                 {
                     localPrest = $"Cód. {_model.Servico.CLocPrestacao}";
                 }
-                if (!string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) && _model.Servico.CPaisPrestacao != "1058")
-                {
-                    localPrest += " / País: " + _model.Servico.CPaisPrestacao;
-                }
+                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "BR" : _model.Servico.CPaisPrestacao;
+                localPrest += " / " + pais;
             }
             else
             {
@@ -446,6 +446,10 @@ namespace NFSe.DANFSe.v2.Rendering
                 DrawMetadataField("Trib.TipoTributacao", Formatters.FormatTipoTributacao(_model.Servico.TribIssqn), currentY);
 
                 string locIncidStr = Formatters.FormatMunUf(_model.XLocIncid, _model.CLocIncid, string.Empty);
+                if (!string.IsNullOrEmpty(locIncidStr) && locIncidStr != "-")
+                {
+                    locIncidStr += " / BR";
+                }
                 DrawMetadataField("Trib.Incidencia", locIncidStr, currentY);
 
                 // Linha 2
@@ -546,13 +550,8 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText(cClass, fontReg7, BlackBrush, 5.41, currentY + 0.37, 4.50, 0.25, LeftAlign);
 
             DrawText("Indicador Op. / IBGE Incidência / Município Incidência / UF", fontBold6, BlackBrush, 10.51, currentY + 0.07, 9.50, 0.20, LeftAlign);
-            string indOpStr = _model.IbsCbs.CIndOp;
-            if (!string.IsNullOrEmpty(_model.IbsCbs.CLocalidadeIncid))
-            {
-                string locIbs = Formatters.FormatMunUf(_model.IbsCbs.XLocalidadeIncid, _model.IbsCbs.CLocalidadeIncid, string.Empty);
-                indOpStr = string.IsNullOrEmpty(indOpStr) ? locIbs : $"{indOpStr} / {_model.IbsCbs.CLocalidadeIncid} / {locIbs}";
-            }
-            if (string.IsNullOrEmpty(indOpStr)) indOpStr = "-";
+            string ufIbs = Formatters.GetUfFromIbge(_model.IbsCbs.CLocalidadeIncid);
+            string indOpStr = Formatters.FormatIbsCbsIndOp(_model.IbsCbs.CIndOp, _model.IbsCbs.CLocalidadeIncid, _model.IbsCbs.XLocalidadeIncid, ufIbs);
             DrawText(indOpStr, fontReg7, BlackBrush, 10.51, currentY + 0.37, 9.50, 0.25, LeftAlign);
 
             // Linha 2
@@ -644,11 +643,32 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText("Total do IBS/CBS", fontBold6, BlackBrush, 10.51, currentY + 0.76, 4.50, 0.20, LeftAlign);
             double.TryParse(_model.IbsCbs.VIbsTot, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double ibsVal);
             double.TryParse(_model.IbsCbs.VCbs, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cbsVal);
-            string totIbsCbs = (ibsVal + cbsVal) > 0 ? (ibsVal + cbsVal).ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
+            double totIbsCbsVal = ibsVal + cbsVal;
+            string totIbsCbs = totIbsCbsVal > 0 ? totIbsCbsVal.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
             DrawText(totIbsCbs, fontReg7, BlackBrush, 10.51, currentY + 1.06, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor Líquido da NFS-e + IBS/CBS", fontBold6, BlackBrush, 15.62, currentY + 0.76, 4.50, 0.20, LeftAlign);
-            string totNf = string.IsNullOrEmpty(_model.IbsCbs.VTotNF) ? "-" : Formatters.FormatCurrency(_model.IbsCbs.VTotNF);
+            string totNf;
+            if (_autoFixInconsistentTotal && totIbsCbsVal > 0)
+            {
+                double.TryParse(_model.Valores.VLiq, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vLiqVal);
+                double.TryParse(_model.IbsCbs.VTotNF, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vTotNfXmlVal);
+                double vTotNfEsperado = vLiqVal + totIbsCbsVal;
+
+                // Se o XML veio omitindo o IBS/CBS por fora (vTotNfXmlVal == vLiqVal < vTotNfEsperado), ajusta dinamicamente
+                if (Math.Abs(vTotNfXmlVal - vLiqVal) < 0.01 && vTotNfXmlVal < (vTotNfEsperado - 0.001))
+                {
+                    totNf = vTotNfEsperado.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                }
+                else
+                {
+                    totNf = string.IsNullOrEmpty(_model.IbsCbs.VTotNF) ? "-" : Formatters.FormatCurrency(_model.IbsCbs.VTotNF);
+                }
+            }
+            else
+            {
+                totNf = string.IsNullOrEmpty(_model.IbsCbs.VTotNF) ? "-" : Formatters.FormatCurrency(_model.IbsCbs.VTotNF);
+            }
             DrawText(totNf, fontReg7, BlackBrush, 15.62, currentY + 1.06, 4.50, 0.25, LeftAlign);
 
             currentY += 1.37;

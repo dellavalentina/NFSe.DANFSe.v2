@@ -4,6 +4,7 @@ using Xunit;
 using NFSe.DANFSe.v2.Parser;
 using NFSe.DANFSe.v2.Models;
 using NFSe.DANFSe.v2.Rendering;
+using NFSe.DANFSe.v2.Helpers;
 
 namespace NFSe.DANFSe.v2.Tests
 {
@@ -157,6 +158,76 @@ namespace NFSe.DANFSe.v2.Tests
 
             Assert.True(File.Exists(pdfOutputPath));
             Console.WriteLine($"PDF de nota terceiros gerado em: {pdfOutputPath}");
+        }
+
+        [Fact]
+        public void TestFormattersTpEmitAndIbsCbsIndOp()
+        {
+            Assert.Equal("1 - Prestador", Formatters.FormatTpEmit("1"));
+            Assert.Equal("2 - Tomador", Formatters.FormatTpEmit("2"));
+            Assert.Equal("3 - Intermediário", Formatters.FormatTpEmit("3"));
+            Assert.Equal("1 - Prestador", Formatters.FormatTpEmit(""));
+
+            string formattedIndOp = Formatters.FormatIbsCbsIndOp("01", "3205309", "Vitória", "ES");
+            Assert.Equal("01 / 3205309 / Vitória / ES", formattedIndOp);
+        }
+
+        [Fact]
+        public void TestAutoFixInconsistentTotalFlag()
+        {
+            string xmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
+            Assert.True(File.Exists(xmlPath));
+
+            string xmlContent = File.ReadAllText(xmlPath);
+            DanfseModel model = DanfseXmlParser.Parse(xmlContent);
+
+            // Adiciona dados hipotéticos de IBS/CBS onde vTotNF no XML veio omitindo o imposto por fora (inconsistente)
+            model.Valores.VLiq = "100.00";
+            model.IbsCbs.VIbsTot = "0.10";
+            model.IbsCbs.VCbs = "0.90";
+            model.IbsCbs.VTotNF = "100.00"; // XML omitiu o IBS/CBS por fora (igual ao líquido)
+
+            // Teste 1: Default (autoFix = false) -> Gera PDF sem alterar o XML
+            byte[] pdfOriginal = DanfsePdfRenderer.GeneratePdf(model, autoFixInconsistentTotal: false);
+            Assert.NotEmpty(pdfOriginal);
+            string pathOriginal = Path.Combine(OutputPath, $"{model.NNFSe}-autofix-false-xml-original.pdf");
+            SafeWriteAllBytes(pathOriginal, pdfOriginal);
+
+            // Teste 2: autoFix = true -> Detecta omissão no XML e recalcula para 101.00 sem duplicidade
+            byte[] pdfFixed = DanfsePdfRenderer.GeneratePdf(model, autoFixInconsistentTotal: true);
+            Assert.NotEmpty(pdfFixed);
+            string pathFixed = Path.Combine(OutputPath, $"{model.NNFSe}-autofix-true-recalculado.pdf");
+            SafeWriteAllBytes(pathFixed, pdfFixed);
+
+            // Teste 3: XML já correto (vTotNF = 101.00) com autoFix = true -> Mantém 101.00 (Zero Duplicidade!)
+            model.IbsCbs.VTotNF = "101.00";
+            byte[] pdfAlreadyCorrect = DanfsePdfRenderer.GeneratePdf(model, autoFixInconsistentTotal: true);
+            Assert.NotEmpty(pdfAlreadyCorrect);
+            string pathAlreadyCorrect = Path.Combine(OutputPath, $"{model.NNFSe}-autofix-true-xml-ja-correto.pdf");
+            SafeWriteAllBytes(pathAlreadyCorrect, pdfAlreadyCorrect);
+
+            Console.WriteLine($"PDFs de teste de autoFix gerados em:\n - {pathOriginal}\n - {pathFixed}\n - {pathAlreadyCorrect}");
+        }
+
+        [Fact]
+        public void TestDanfseConfigGlobalSetting()
+        {
+            DanfseConfig.Reset();
+            Assert.False(DanfseConfig.AutoFixInconsistentTotal);
+
+            DanfseConfig.AutoFixInconsistentTotal = true;
+            Assert.True(DanfseConfig.AutoFixInconsistentTotal);
+
+            string xmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
+            string xmlContent = File.ReadAllText(xmlPath);
+            DanfseModel model = DanfseXmlParser.Parse(xmlContent);
+
+            // Sem passar o parâmetro autoFixInconsistentTotal (nulo por padrão), ele deve usar DanfseConfig.AutoFixInconsistentTotal (true)
+            byte[] pdfBytes = DanfsePdfRenderer.GeneratePdf(model);
+            Assert.NotEmpty(pdfBytes);
+
+            DanfseConfig.Reset();
+            Assert.False(DanfseConfig.AutoFixInconsistentTotal);
         }
     }
 }

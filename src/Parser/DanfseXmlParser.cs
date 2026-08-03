@@ -107,7 +107,8 @@ namespace NFSe.DANFSe.v2.Parser
                         DhEmi = GetElementValue(infDPS, dpsNs + "dhEmi"),
                         Serie = GetElementValue(infDPS, dpsNs + "serie"),
                         NDPS = GetElementValue(infDPS, dpsNs + "nDPS"),
-                        DCompet = GetElementValue(infDPS, dpsNs + "dCompet")
+                        DCompet = GetElementValue(infDPS, dpsNs + "dCompet"),
+                        TpEmit = GetElementValue(infDPS, dpsNs + "tpEmit")
                     };
 
                     // Prestador
