@@ -1,5 +1,10 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.2.2] - 2026-08-04
+### Refatorado / Corrigido
+- **Ajuste na assinatura de `GeneratePdf`**: O parâmetro `autoFixInconsistentTotal` foi alterado de volta para `bool?` para permitir maior flexibilidade caso o integrador passe um valor nulo da sua fonte de configuração (tratando `null` como `false` internamente).
+- **Correção de Warnings de Nullability**: Corrigido o tipo do parâmetro `logoBytes` para `byte[]?` resolvendo warnings de compilador quando valores nulos eram passados nos testes.
+
 ## [0.2.1] - 2026-08-04
 ### Removido / Refatorado
 - **Remoção de `DanfseConfig`**: Excluída a classe de configuração global `DanfseConfig` e a lógica de leitura dinâmica de arquivos `App.config` / `Web.config`.
