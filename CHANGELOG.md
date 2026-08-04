@@ -1,5 +1,10 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.2.1] - 2026-08-04
+### Removido / Refatorado
+- **Remoção de `DanfseConfig`**: Excluída a classe de configuração global `DanfseConfig` e a lógica de leitura dinâmica de arquivos `App.config` / `Web.config`.
+- **Refatoração do Parâmetro de Totais**: O parâmetro `autoFixInconsistentTotal` em `DanfsePdfRenderer.GeneratePdf` foi simplificado para um tipo `bool` com padrão `false`. A decisão de como ler e repassar a configuração agora cabe inteiramente ao desenvolvedor que consome a biblioteca, mantendo o motor de renderização PDF totalmente stateless.
+
 ## [0.2.0] - 2026-08-04
 ### Adicionado
 - **Suporte ao .NET Framework 4.8**: Adicionado target framework `net48` em conjunto com `net6.0` e `netstandard2.0` no projeto para facilitar a integração nativa em projetos legados (.NET Framework).

@@ -236,25 +236,5 @@ namespace NFSe.DANFSe.v2.Tests
             Console.WriteLine($"PDFs de teste de autoFix gerados em:\n - {pathOriginal}\n - {pathFixed}\n - {pathAlreadyCorrect}");
         }
 
-        [Fact]
-        public void TestDanfseConfigGlobalSetting()
-        {
-            DanfseConfig.Reset();
-            Assert.False(DanfseConfig.AutoFixInconsistentTotal);
-
-            DanfseConfig.AutoFixInconsistentTotal = true;
-            Assert.True(DanfseConfig.AutoFixInconsistentTotal);
-
-            string xmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
-            string xmlContent = File.ReadAllText(xmlPath);
-            DanfseModel model = DanfseXmlParser.Parse(xmlContent);
-
-            // Sem passar o parâmetro autoFixInconsistentTotal (nulo por padrão), ele deve usar DanfseConfig.AutoFixInconsistentTotal (true)
-            byte[] pdfBytes = DanfsePdfRenderer.GeneratePdf(model);
-            Assert.NotEmpty(pdfBytes);
-
-            DanfseConfig.Reset();
-            Assert.False(DanfseConfig.AutoFixInconsistentTotal);
-        }
     }
 }

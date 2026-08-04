@@ -71,10 +71,9 @@ namespace NFSe.DANFSe.v2.Rendering
             fontBold6 = new XFont("LiberationSans", 6, XFontStyleEx.Bold);
         }
 
-        public static byte[] GeneratePdf(DanfseModel model, byte[]? logoBytes = null, bool forceTestWatermark = false, bool? autoFixInconsistentTotal = null)
+        public static byte[] GeneratePdf(DanfseModel model, byte[]? logoBytes = null, bool forceTestWatermark = false, bool autoFixInconsistentTotal = false)
         {
-            bool shouldAutoFix = autoFixInconsistentTotal ?? DanfseConfig.AutoFixInconsistentTotal;
-            var renderer = new DanfsePdfRenderer(model, logoBytes, forceTestWatermark, shouldAutoFix);
+            var renderer = new DanfsePdfRenderer(model, logoBytes, forceTestWatermark, autoFixInconsistentTotal);
             renderer.Render();
 
             using (var stream = new MemoryStream())
