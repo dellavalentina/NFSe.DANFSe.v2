@@ -1,5 +1,10 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.2.0] - 2026-08-04
+### Adicionado
+- **Suporte ao .NET Framework 4.8**: Adicionado target framework `net48` em conjunto com `net6.0` e `netstandard2.0` no projeto para facilitar a integração nativa em projetos legados (.NET Framework).
+- **Compilação Condicional em `DanfseConfig`**: Isolado o namespace `System.Configuration` e o método de leitura direta do `ConfigurationManager` usando a diretiva `#if NETFRAMEWORK`, prevenindo exceções de JIT em ambientes modernos (.NET Core/.NET 6+) que não possuem a referência em tempo de execução.
+
 ## [0.1.5] - 2026-08-03
 ### Adicionado
 - **Configuração Global `DanfseConfig`**: Criada classe estática de configuração com suporte automático a `App.config` / `Web.config` (`System.Configuration.ConfigurationManager`) para a propriedade `AutoFixInconsistentTotal`.

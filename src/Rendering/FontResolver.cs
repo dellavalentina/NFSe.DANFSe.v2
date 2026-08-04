@@ -50,19 +50,33 @@ namespace NFSe.DANFSe.v2.Rendering
             }
         }
 
+        private static readonly object RegisterLock = new object();
+
         public static void Register()
         {
-            try
+            if (GlobalFontSettings.FontResolver is EmbeddedFontResolver)
             {
-                // Evita lançar exceção caso já tenha sido registrado anteriormente em testes
-                if (!(GlobalFontSettings.FontResolver is EmbeddedFontResolver))
-                {
-                    GlobalFontSettings.FontResolver = new EmbeddedFontResolver();
-                }
+                return;
             }
-            catch (InvalidOperationException)
+
+            lock (RegisterLock)
             {
-                // Já registrado
+                try
+                {
+                    // Evita lançar exceção caso já tenha sido registrado anteriormente em testes
+                    if (!(GlobalFontSettings.FontResolver is EmbeddedFontResolver))
+                    {
+                        GlobalFontSettings.FontResolver = new EmbeddedFontResolver();
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    // Já registrado
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Aviso: Falha ao registrar FontResolver: {ex.Message}");
+                }
             }
         }
     }
