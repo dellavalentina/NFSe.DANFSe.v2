@@ -23,22 +23,51 @@ namespace NFSe.DANFSe.v2.Helpers
                     return _autoFixInconsistentTotal.Value;
                 }
 
-                try
-                {
-                    string? appSetting = ConfigurationManager.AppSettings["NFSe.DANFSe.AutoFixInconsistentTotal"];
-                    if (bool.TryParse(appSetting, out bool result))
-                    {
-                        return result;
-                    }
-                }
-                catch
-                {
-                    // Ignora exceções de acesso a configurações
-                }
-
-                return false;
+                // Tenta ler do arquivo de configuração com tratamento robusto
+                bool configValue = TryGetConfigurationValue();
+                return configValue;
             }
             set => _autoFixInconsistentTotal = value;
+        }
+
+        /// <summary>
+        /// Tenta obter o valor de configuração do App.config com tratamento completo de exceções.
+        /// </summary>
+        private static bool TryGetConfigurationValue()
+        {
+            try
+            {
+                string? appSetting = ConfigurationManager.AppSettings["NFSe.DANFSe.AutoFixInconsistentTotal"];
+
+                if (bool.TryParse(appSetting, out bool result))
+                {
+                    return result;
+                }
+            }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                // Arquivo de configuração não encontrado - logging opcional
+                System.Diagnostics.Debug.WriteLine(
+                    $"Aviso: Arquivo de configuração não encontrado ao tentar ler 'NFSe.DANFSe.AutoFixInconsistentTotal'. " +
+                    $"Usando valor padrão (false). Detalhes: {ex.Message}");
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+                // Erro ao parsear o arquivo de configuração
+                System.Diagnostics.Debug.WriteLine(
+                    $"Aviso: Erro ao processar arquivo de configuração para 'NFSe.DANFSe.AutoFixInconsistentTotal'. " +
+                    $"Usando valor padrão (false). Detalhes: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Qualquer outra exceção
+                System.Diagnostics.Debug.WriteLine(
+                    $"Aviso: Erro inesperado ao ler configuração 'NFSe.DANFSe.AutoFixInconsistentTotal'. " +
+                    $"Usando valor padrão (false). Tipo: {ex.GetType().Name}, Detalhes: {ex.Message}");
+            }
+
+            // Valor padrão seguro
+            return false;
         }
 
         /// <summary>

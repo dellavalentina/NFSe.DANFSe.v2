@@ -1,5 +1,17 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.1.5] - 2026-08-03
+### Adicionado
+- **Configuração Global `DanfseConfig`**: Criada classe estática de configuração com suporte automático a `App.config` / `Web.config` (`System.Configuration.ConfigurationManager`) para a propriedade `AutoFixInconsistentTotal`.
+- **Parsing de `CST` / `cClassTrib` e `finNFSe`**: Mapeamento completo dos nós `<trib>/<gIBSCBS>` e `<finNFSe>` nos elementos `<IBSCBS>` de `infNFSe` e `infDPS`.
+
+### Corrigido
+- **Mapeamento Estrito dos Schemas XSD (v1.00 e v1.01)**:
+  - **`SITUAÇÃO DA NFS-E`**: Mapeamento exclusivo a partir de `<cStat>` (`TStat` do XSD: `100 - NFS-e Gerada`, `101`, `102`, `103`, `107`).
+  - **`FINALIDADE`**: Mapeamento exclusivo a partir de `<finNFSe>` (`TSRTCFinNFSe` do XSD: `0 - NFS-e regular`; vazio no schema v1.00).
+- **Formatadores**: Criados `FormatCstCClassTrib`, `FormatFinalidadeNfse` e atualizado `FormatSituacaoNfse` sem interferência indevida de parâmetros inferidos.
+- **Parsing de IBSCBS (Mesclagem infNFSe + infDPS)**: Reestruturada a extração do nó `<IBSCBS>` para combinar de forma resiliente os dados calculados da nota com os dados de declaração da DPS.
+
 ## [0.1.4] - 2026-08-03
 ### Adicionado
 - **Reforma Tributária / Resiliência de Totais (`autoFixInconsistentTotal`)**: Adicionada opção configurável e algoritmo de verificação inteligente anti-duplicidade em `DanfsePdfRenderer.GeneratePdf`. Quando ativada, se o XML da SEFIN Nacional omitir o imposto cobrado por fora na tag `<vTotNF>` (igualando-o ao valor líquido `vLiq`), o DANFSe exibe o valor total corrigido (`vLiq + vIBS + vCBS`). Se o XML já estiver correto, o valor original é mantido sem nenhuma duplicidade de cálculo.

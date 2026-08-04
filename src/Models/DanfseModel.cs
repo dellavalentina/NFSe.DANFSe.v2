@@ -7,6 +7,7 @@ namespace NFSe.DANFSe.v2.Models
         // Status & Metadata
         public string Id { get; set; } = string.Empty; // Chave de acesso (e.g. "NFS3205309...")
         public string NNFSe { get; set; } = string.Empty; // Número da NFS-e
+        public string CStat { get; set; } = string.Empty; // Código da Situação da NFS-e (cStat)
         public string DhProc { get; set; } = string.Empty; // Data/Hora Processamento
         public string TpAmb { get; set; } = "1"; // 1 = Produção, 2 = Homologação
         public string AmbGer { get; set; } = string.Empty;
@@ -98,6 +99,9 @@ namespace NFSe.DANFSe.v2.Models
         public string CLocalidadeIncid { get; set; } = string.Empty;
         public string XLocalidadeIncid { get; set; } = string.Empty;
         public string CIndOp { get; set; } = string.Empty; // Indicador de operação
+        public string FinNFSe { get; set; } = string.Empty; // Indicador de finalidade da NFS-e (finNFSe - TSRTCFinNFSe)
+        public string Cst { get; set; } = string.Empty; // Código de Situação Tributária (CST)
+        public string CClassTrib { get; set; } = string.Empty; // Código de Classificação Tributária (cClassTrib)
 
         // Valores IBS/CBS
         public string VBC { get; set; } = string.Empty;

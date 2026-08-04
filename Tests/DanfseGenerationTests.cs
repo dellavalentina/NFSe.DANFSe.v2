@@ -170,6 +170,33 @@ namespace NFSe.DANFSe.v2.Tests
 
             string formattedIndOp = Formatters.FormatIbsCbsIndOp("01", "3205309", "Vitória", "ES");
             Assert.Equal("01 / 3205309 / Vitória / ES", formattedIndOp);
+
+            Assert.Equal("000 / 000001", Formatters.FormatCstCClassTrib("000", "000001"));
+            Assert.Equal("-", Formatters.FormatCstCClassTrib("", ""));
+
+            Assert.Equal("100 - NFS-e Gerada", Formatters.FormatSituacaoNfse("100"));
+            Assert.Equal("101 - NFS-e de Substituição Gerada", Formatters.FormatSituacaoNfse("101"));
+            Assert.Equal("102 - NFS-e de Decisão Judicial", Formatters.FormatSituacaoNfse("102"));
+            Assert.Equal("103 - NFS-e Avulsa", Formatters.FormatSituacaoNfse("103"));
+            Assert.Equal("107 - NFS-e MEI", Formatters.FormatSituacaoNfse("107"));
+
+            Assert.Equal("0 - NFS-e regular", Formatters.FormatFinalidadeNfse("0"));
+            Assert.Equal("", Formatters.FormatFinalidadeNfse(""));
+        }
+
+        [Fact]
+        public void TestParseIbsCbsFromInfNfseAndInfDps()
+        {
+            string xmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
+            string xmlContent = File.ReadAllText(xmlPath);
+            DanfseModel model = DanfseXmlParser.Parse(xmlContent);
+
+            // Verifica se a mesclagem de infNFSe/IBSCBS e infDPS/IBSCBS foi realizada corretamente
+            Assert.Equal("3205309", model.IbsCbs.CLocalidadeIncid);
+            Assert.Equal("Vitória", model.IbsCbs.XLocalidadeIncid);
+            Assert.Equal("030101", model.IbsCbs.CIndOp);
+            Assert.Equal("000", model.IbsCbs.Cst);
+            Assert.Equal("000001", model.IbsCbs.CClassTrib);
         }
 
         [Fact]

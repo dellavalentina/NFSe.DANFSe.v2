@@ -52,6 +52,7 @@ namespace NFSe.DANFSe.v2.Parser
             {
                 Id = GetAttributeValue(infNFSe, "Id"),
                 NNFSe = GetElementValue(infNFSe, ns + "nNFSe"),
+                CStat = GetElementValue(infNFSe, ns + "cStat"),
                 DhProc = GetElementValue(infNFSe, ns + "dhProc"),
                 CLocIncid = GetElementValue(infNFSe, ns + "cLocIncid"),
                 XLocIncid = GetElementValue(infNFSe, ns + "xLocIncid"),
@@ -144,6 +145,13 @@ namespace NFSe.DANFSe.v2.Parser
                     if (serv != null)
                     {
                         modelResult.Servico = ParseServico(serv, infDPS, dpsNs);
+                    }
+
+                    // Complementa IBS/CBS com dados da DPS (ex: cIndOp, CST, cClassTrib) se existirem
+                    var ibsCbsDps = infDPS.Element(dpsNs + "IBSCBS");
+                    if (ibsCbsDps != null)
+                    {
+                        ParseIbsCbsElement(modelResult.IbsCbs, ibsCbsDps, dpsNs);
                     }
                 }
             }
@@ -373,85 +381,121 @@ namespace NFSe.DANFSe.v2.Parser
 
         private static IbsCbsData ParseIbsCbs(XElement elem, XNamespace ns)
         {
+            var data = new IbsCbsData();
+            ParseIbsCbsElement(data, elem, ns);
+            return data;
+        }
+
+        private static void ParseIbsCbsElement(IbsCbsData data, XElement elem, XNamespace ns)
+        {
+            if (elem == null) return;
+
+            string cLoc = GetElementValue(elem, ns + "cLocalidadeIncid");
+            if (!string.IsNullOrEmpty(cLoc)) data.CLocalidadeIncid = cLoc;
+
+            string xLoc = GetElementValue(elem, ns + "xLocalidadeIncid");
+            if (!string.IsNullOrEmpty(xLoc)) data.XLocalidadeIncid = xLoc;
+
+            string cIndOp = GetElementValue(elem, ns + "cIndOp");
+            if (!string.IsNullOrEmpty(cIndOp)) data.CIndOp = cIndOp;
+
+            string finNFSe = GetElementValue(elem, ns + "finNFSe");
+            if (!string.IsNullOrEmpty(finNFSe)) data.FinNFSe = finNFSe;
+
             var valores = elem.Element(ns + "valores");
-            var totCIBS = elem.Element(ns + "totCIBS");
-
-            var data = new IbsCbsData
-            {
-                CLocalidadeIncid = GetElementValue(elem, ns + "cLocalidadeIncid"),
-                XLocalidadeIncid = GetElementValue(elem, ns + "xLocalidadeIncid"),
-                CIndOp = GetElementValue(elem, ns + "cIndOp")
-            };
-
             if (valores != null)
             {
-                data.VBC = GetElementValue(valores, ns + "vBC");
-                data.VCalcReeRepRes = GetElementValue(valores, ns + "vCalcReeRepRes");
+                string vbc = GetElementValue(valores, ns + "vBC");
+                if (!string.IsNullOrEmpty(vbc)) data.VBC = vbc;
+
+                string vcalc = GetElementValue(valores, ns + "vCalcReeRepRes");
+                if (!string.IsNullOrEmpty(vcalc)) data.VCalcReeRepRes = vcalc;
+
+                var trib = valores.Element(ns + "trib");
+                var gIBSCBS = trib != null ? trib.Element(ns + "gIBSCBS") : elem.Element(ns + "gIBSCBS");
+                if (gIBSCBS != null)
+                {
+                    string cst = GetElementValue(gIBSCBS, ns + "CST");
+                    if (!string.IsNullOrEmpty(cst)) data.Cst = cst;
+
+                    string cclass = GetElementValue(gIBSCBS, ns + "cClassTrib");
+                    if (!string.IsNullOrEmpty(cclass)) data.CClassTrib = cclass;
+                }
 
                 var uf = valores.Element(ns + "uf");
                 if (uf != null)
                 {
-                    data.Uf = new UfTax
-                    {
-                        PRedAliqUF = GetElementValue(uf, ns + "pRedAliqUF"),
-                        PIbsUF = GetElementValue(uf, ns + "pIBSUF"),
-                        PAliqEfetUF = GetElementValue(uf, ns + "pAliqEfetUF")
-                    };
+                    string pRedUF = GetElementValue(uf, ns + "pRedAliqUF");
+                    if (!string.IsNullOrEmpty(pRedUF)) data.Uf.PRedAliqUF = pRedUF;
+
+                    string pIbsUF = GetElementValue(uf, ns + "pIBSUF");
+                    if (!string.IsNullOrEmpty(pIbsUF)) data.Uf.PIbsUF = pIbsUF;
+
+                    string pAliqEfetUF = GetElementValue(uf, ns + "pAliqEfetUF");
+                    if (!string.IsNullOrEmpty(pAliqEfetUF)) data.Uf.PAliqEfetUF = pAliqEfetUF;
                 }
 
                 var mun = valores.Element(ns + "mun");
                 if (mun != null)
                 {
-                    data.Mun = new MunTax
-                    {
-                        PRedAliqMun = GetElementValue(mun, ns + "pRedAliqMun"),
-                        PIbsMun = GetElementValue(mun, ns + "pIBSMun"),
-                        PAliqEfetMun = GetElementValue(mun, ns + "pAliqEfetMun")
-                    };
+                    string pRedMun = GetElementValue(mun, ns + "pRedAliqMun");
+                    if (!string.IsNullOrEmpty(pRedMun)) data.Mun.PRedAliqMun = pRedMun;
+
+                    string pIbsMun = GetElementValue(mun, ns + "pIBSMun");
+                    if (!string.IsNullOrEmpty(pIbsMun)) data.Mun.PIbsMun = pIbsMun;
+
+                    string pAliqEfetMun = GetElementValue(mun, ns + "pAliqEfetMun");
+                    if (!string.IsNullOrEmpty(pAliqEfetMun)) data.Mun.PAliqEfetMun = pAliqEfetMun;
                 }
 
                 var fed = valores.Element(ns + "fed");
                 if (fed != null)
                 {
-                    data.Fed = new FedTax
-                    {
-                        PRedAliqCBS = GetElementValue(fed, ns + "pRedAliqCBS"),
-                        PCbs = GetElementValue(fed, ns + "pCBS"),
-                        PAliqEfetCBS = GetElementValue(fed, ns + "pAliqEfetCBS")
-                    };
+                    string pRedCBS = GetElementValue(fed, ns + "pRedAliqCBS");
+                    if (!string.IsNullOrEmpty(pRedCBS)) data.Fed.PRedAliqCBS = pRedCBS;
+
+                    string pCbs = GetElementValue(fed, ns + "pCBS");
+                    if (!string.IsNullOrEmpty(pCbs)) data.Fed.PCbs = pCbs;
+
+                    string pAliqEfetCBS = GetElementValue(fed, ns + "pAliqEfetCBS");
+                    if (!string.IsNullOrEmpty(pAliqEfetCBS)) data.Fed.PAliqEfetCBS = pAliqEfetCBS;
                 }
             }
 
+            var totCIBS = elem.Element(ns + "totCIBS");
             if (totCIBS != null)
             {
-                data.VTotNF = GetElementValue(totCIBS, ns + "vTotNF");
-                
+                string vtot = GetElementValue(totCIBS, ns + "vTotNF");
+                if (!string.IsNullOrEmpty(vtot)) data.VTotNF = vtot;
+
                 var gIBS = totCIBS.Element(ns + "gIBS");
                 if (gIBS != null)
                 {
-                    data.VIbsTot = GetElementValue(gIBS, ns + "vIBSTot");
-                    
+                    string vibsTot = GetElementValue(gIBS, ns + "vIBSTot");
+                    if (!string.IsNullOrEmpty(vibsTot)) data.VIbsTot = vibsTot;
+
                     var gIbsUf = gIBS.Element(ns + "gIBSUFTot");
                     if (gIbsUf != null)
                     {
-                        data.VIbsUf = GetElementValue(gIbsUf, ns + "vIBSUF");
+                        string vibsUf = GetElementValue(gIbsUf, ns + "vIBSUF");
+                        if (!string.IsNullOrEmpty(vibsUf)) data.VIbsUf = vibsUf;
                     }
 
                     var gIbsMun = gIBS.Element(ns + "gIBSMunTot");
                     if (gIbsMun != null)
                     {
-                        data.VIbsMun = GetElementValue(gIbsMun, ns + "vIBSMun");
+                        string vibsMun = GetElementValue(gIbsMun, ns + "vIBSMun");
+                        if (!string.IsNullOrEmpty(vibsMun)) data.VIbsMun = vibsMun;
                     }
                 }
 
                 var gCBS = totCIBS.Element(ns + "gCBS");
                 if (gCBS != null)
                 {
-                    data.VCbs = GetElementValue(gCBS, ns + "vCBS");
+                    string vcbs = GetElementValue(gCBS, ns + "vCBS");
+                    if (!string.IsNullOrEmpty(vcbs)) data.VCbs = vcbs;
                 }
             }
-
-            return data;
         }
 
         private static string GetElementValue(XElement parent, XName name)

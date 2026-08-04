@@ -305,5 +305,67 @@ namespace NFSe.DANFSe.v2.Helpers
             if (parts.Count == 0) return "-";
             return string.Join(" / ", parts);
         }
+
+        /// <summary>
+        /// Formata o campo CST / CCLASSTRIB no formato "nnn / nnnnnn" conforme a Nota Técnica 008 pág 19.
+        /// Exemplo: "000 / 000001"
+        /// </summary>
+        public static string FormatCstCClassTrib(string cst, string cClassTrib)
+        {
+            if (string.IsNullOrEmpty(cst) && string.IsNullOrEmpty(cClassTrib))
+            {
+                return "-";
+            }
+            if (string.IsNullOrEmpty(cst)) return cClassTrib;
+            if (string.IsNullOrEmpty(cClassTrib)) return cst;
+            return $"{cst} / {cClassTrib}";
+        }
+
+        /// <summary>
+        /// Formata o campo SITUAÇÃO DA NFS-E exclusivamente a partir da tag cStat (TStat do XSD v1.00 / v1.01):
+        /// 100 -> "100 - NFS-e Gerada"
+        /// 101 -> "101 - NFS-e de Substituição Gerada"
+        /// 102 -> "102 - NFS-e de Decisão Judicial"
+        /// 103 -> "103 - NFS-e Avulsa"
+        /// 107 -> "107 - NFS-e MEI"
+        /// </summary>
+        public static string FormatSituacaoNfse(string cStat)
+        {
+            switch (cStat)
+            {
+                case "101":
+                    return "101 - NFS-e de Substituição Gerada";
+                case "102":
+                    return "102 - NFS-e de Decisão Judicial";
+                case "103":
+                    return "103 - NFS-e Avulsa";
+                case "107":
+                    return "107 - NFS-e MEI";
+                case "100":
+                default:
+                    return "100 - NFS-e Gerada";
+            }
+        }
+
+        /// <summary>
+        /// Formata o campo FINALIDADE no DANFSe a partir de finNFSe (TSRTCFinNFSe do XSD v1.01):
+        /// 0 -> "0 - NFS-e regular"
+        /// Não previsto na v1.00 -> vazio ("")
+        /// </summary>
+        public static string FormatFinalidadeNfse(string finNFSe)
+        {
+            if (string.IsNullOrEmpty(finNFSe))
+            {
+                return "";
+            }
+
+            switch (finNFSe)
+            {
+                case "0":
+                    return "0 - NFS-e regular";
+                default:
+                    return finNFSe;
+            }
+        }
     }
 }

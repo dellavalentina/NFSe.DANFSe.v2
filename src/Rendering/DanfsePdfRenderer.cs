@@ -201,8 +201,8 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText("FINALIDADE", fontBold7, BlackBrush, 10.51, 3.72, 5.00, 0.25, LeftAlign);
 
             DrawText(Formatters.FormatTpEmit(_model.Dps.TpEmit), fontReg7, BlackBrush, 0.40, 4.02, 4.50, 0.25, LeftAlign);
-            DrawText("1 - Normal", fontReg7, BlackBrush, 5.41, 4.02, 4.50, 0.25, LeftAlign);
-            DrawText("1 - Normal", fontReg7, BlackBrush, 10.51, 4.02, 5.00, 0.25, LeftAlign);
+            DrawText(Formatters.FormatSituacaoNfse(_model.CStat), fontReg7, BlackBrush, 5.41, 4.02, 4.50, 0.25, LeftAlign);
+            DrawText(Formatters.FormatFinalidadeNfse(_model.IbsCbs.FinNFSe), fontReg7, BlackBrush, 10.51, 4.02, 5.00, 0.25, LeftAlign);
 
             // ----------------------------------------------------------------------
             // 3. PRESTADOR / FORNECEDOR (Fixado)
@@ -546,8 +546,8 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText("TRIBUTAÇÃO IBS / CBS", fontBold7, BlackBrush, 0.40, currentY + 0.07, 4.50, 0.25, LeftAlign);
 
             DrawText("CST / CCLASS TRIB", fontBold6, BlackBrush, 5.41, currentY + 0.07, 4.50, 0.20, LeftAlign);
-            string cClass = string.IsNullOrEmpty(_model.IbsCbs.CIndOp) ? "-" : _model.IbsCbs.CIndOp;
-            DrawText(cClass, fontReg7, BlackBrush, 5.41, currentY + 0.37, 4.50, 0.25, LeftAlign);
+            string cstCClassStr = Formatters.FormatCstCClassTrib(_model.IbsCbs.Cst, _model.IbsCbs.CClassTrib);
+            DrawText(cstCClassStr, fontReg7, BlackBrush, 5.41, currentY + 0.37, 4.50, 0.25, LeftAlign);
 
             DrawText("Indicador Op. / IBGE Incidência / Município Incidência / UF", fontBold6, BlackBrush, 10.51, currentY + 0.07, 9.50, 0.20, LeftAlign);
             string ufIbs = Formatters.GetUfFromIbge(_model.IbsCbs.CLocalidadeIncid);
