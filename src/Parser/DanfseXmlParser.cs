@@ -84,6 +84,15 @@ namespace NFSe.DANFSe.v2.Parser
                     PAliqAplic = GetElementValue(valores, ns + "pAliqAplic"),
                     VIssqn = GetElementValue(valores, ns + "vISSQN")
                 };
+
+                // totTrib vive em trib/totTrib/vTotTrib, fora do grupo <valores> lido acima.
+                var totTrib = infNFSe.Descendants(ns + "vTotTrib").FirstOrDefault();
+                if (totTrib != null)
+                {
+                    modelResult.Valores.VTotTribFed = GetElementValue(totTrib, ns + "vTotTribFed");
+                    modelResult.Valores.VTotTribEst = GetElementValue(totTrib, ns + "vTotTribEst");
+                    modelResult.Valores.VTotTribMun = GetElementValue(totTrib, ns + "vTotTribMun");
+                }
             }
 
             // IBS / CBS (Reforma Tributária)

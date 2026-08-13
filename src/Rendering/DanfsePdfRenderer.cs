@@ -647,7 +647,7 @@ namespace NFSe.DANFSe.v2.Rendering
             double.TryParse(_model.IbsCbs.VIbsTot, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double ibsVal);
             double.TryParse(_model.IbsCbs.VCbs, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cbsVal);
             double totIbsCbsVal = ibsVal + cbsVal;
-            string totIbsCbs = totIbsCbsVal > 0 ? totIbsCbsVal.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
+            string totIbsCbs = totIbsCbsVal > 0 ? totIbsCbsVal.ToString("C2", Helpers.Formatters.PtBrCurrency) : "-";
             DrawText(totIbsCbs, fontReg7, BlackBrush, 10.51, currentY + 1.06, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor Líquido da NFS-e + IBS/CBS", fontBold6, BlackBrush, 15.62, currentY + 0.76, 4.50, 0.20, LeftAlign);
@@ -661,7 +661,7 @@ namespace NFSe.DANFSe.v2.Rendering
                 // Se o XML veio omitindo o IBS/CBS por fora (vTotNfXmlVal == vLiqVal < vTotNfEsperado), ajusta dinamicamente
                 if (Math.Abs(vTotNfXmlVal - vLiqVal) < 0.01 && vTotNfXmlVal < (vTotNfEsperado - 0.001))
                 {
-                    totNf = vTotNfEsperado.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                    totNf = vTotNfEsperado.ToString("C2", Helpers.Formatters.PtBrCurrency);
                 }
                 else
                 {
@@ -961,22 +961,25 @@ namespace NFSe.DANFSe.v2.Rendering
             return result;
         }
 
+        // A NT 008 (tabela de leiaute) nomeia a fonte destes valores: vTotTribFed/Est/Mun — o grupo totTrib da
+        // Lei 12.741/2012, calculado pela tabela IBPT. Retenções e ISS são outras grandezas: numa nota com
+        // vTotTribMun=22,73 e ISS=15,00, imprimir o ISS declara valor errado num campo exigido por lei.
         private string BuildTotalsTributosInfo()
         {
-            double fedTax = 0;
-            double.TryParse(_model.Servico.VRetIrrf, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double ir);
-            double.TryParse(_model.Servico.VRetCp, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cp);
-            double.TryParse(_model.Servico.VRetCsll, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cs);
-            double.TryParse(_model.Servico.VPis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double pis);
-            double.TryParse(_model.Servico.VCofins, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cof);
-            fedTax = ir + cp + cs + pis + cof;
+            static double Parse(string? v)
+            {
+                double.TryParse(
+                    v, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out double d);
+                return d;
+            }
 
-            double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double iss);
-            
-            string fedStr = fedTax > 0 ? fedTax.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
-            string munStr = iss > 0 ? iss.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
-            
-            return $"Totais Aproximados dos Tributos cfe. Lei nº 12.741/2012: Federais: {fedStr} ; Estaduais: - ; Municipais: {munStr}";
+            static string Currency(double v) => v > 0 ? v.ToString("C2", Helpers.Formatters.PtBrCurrency) : "-";
+
+            return "Totais Aproximados dos Tributos cfe. Lei nº 12.741/2012: "
+                + $"Federais: {Currency(Parse(_model.Valores.VTotTribFed))} ; "
+                + $"Estaduais: {Currency(Parse(_model.Valores.VTotTribEst))} ; "
+                + $"Municipais: {Currency(Parse(_model.Valores.VTotTribMun))}";
         }
 
         private static bool ByteArraysEqual(byte[]? b1, byte[]? b2)

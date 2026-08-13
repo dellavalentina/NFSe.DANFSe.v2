@@ -69,13 +69,29 @@ namespace NFSe.DANFSe.v2.Helpers
             return phone;
         }
 
+        /// <summary>
+        /// Formato monetário brasileiro montado à mão. Necessário porque <c>new CultureInfo("pt-BR")</c> lança
+        /// <c>Only the invariant culture is supported</c> quando a aplicação consumidora roda em
+        /// globalization-invariant mode (<c>InvariantGlobalization=true</c>, comum em contêineres enxutos).
+        /// </summary>
+        public static readonly NumberFormatInfo PtBrCurrency = new()
+        {
+            CurrencySymbol = "R$",
+            CurrencyDecimalSeparator = ",",
+            CurrencyGroupSeparator = ".",
+            CurrencyDecimalDigits = 2,
+            CurrencyGroupSizes = new[] { 3 },
+            CurrencyPositivePattern = 2, // "R$ n"
+            CurrencyNegativePattern = 9, // "R$ -n"
+        };
+
         public static string FormatCurrency(string val)
         {
             if (string.IsNullOrEmpty(val) || val == "-") return "-";
 
             if (double.TryParse(val, NumberStyles.Any, CultureInfo.InvariantCulture, out double parsed))
             {
-                return parsed.ToString("C2", new CultureInfo("pt-BR"));
+                return parsed.ToString("C2", PtBrCurrency);
             }
 
             return val;
