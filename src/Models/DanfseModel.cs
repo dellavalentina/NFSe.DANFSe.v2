@@ -92,6 +92,11 @@ namespace NFSe.DANFSe.v2.Models
         public string VBC { get; set; } = string.Empty; // Base de cálculo ISSQN
         public string PAliqAplic { get; set; } = string.Empty; // Alíquota ISSQN
         public string VIssqn { get; set; } = string.Empty; // Valor do ISSQN
+
+        // Grupo totTrib (Lei 12.741/2012), exigido pela NT 008 nas Informações Complementares.
+        public string VTotTribFed { get; set; } = string.Empty;
+        public string VTotTribEst { get; set; } = string.Empty;
+        public string VTotTribMun { get; set; } = string.Empty;
     }
 
     public class IbsCbsData
