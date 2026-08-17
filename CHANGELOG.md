@@ -1,5 +1,14 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.2.3] - 2026-08-17
+### Corrigido / Refatorado
+- **Adequação ao DANFSe Oficial do Emissor Nacional (Anexo B)**:
+  - **Exclusões e Reduções da Base de Cálculo (IBS/CBS)**: Atualizado o renderer para calcular e exibir o somatório real das exclusões (`vDescIncond + vCalcReeRepRes + vISSQN + vPIS + vCOFINS`), exibindo `R$ 109,88` quando houver abatimento do ISSQN.
+  - **Formatação de Alíquotas e NBS**: Adicionados helpers `FormatPercent` (formatação com vírgula e `%`) e `FormatNbs` (máscara `x.xxxx.xx.xx`).
+  - **Reduções de Alíquota IBS/CBS**: Exibição do padrão `- / - / -` quando sem reduções.
+  - **Benefício Municipal**: Ajustada a descrição para `"Redução por valor monetário"` na versão 1.01.
+  - **Lei nº 12.741/2012**: Ajustado o rodapé para exibição em porcentagem (`Federais: 0,00 %; Estaduais: 0,00 %; Municipais: 5,00 %;`).
+
 ## [0.2.2] - 2026-08-04
 ### Refatorado / Corrigido
 - **Ajuste na assinatura de `GeneratePdf`**: O parâmetro `autoFixInconsistentTotal` foi alterado de volta para `bool?` para permitir maior flexibilidade caso o integrador passe um valor nulo da sua fonte de configuração (tratando `null` como `false` internamente).

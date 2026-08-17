@@ -122,34 +122,10 @@ namespace NFSe.DANFSe.v2.Rendering
             }
 
             // Identificação do Ambiente Gerador (NT Pág. 15)
-            string ambGerStr = "-";
-            if (_model.AmbGer == Models.NfseSchemaValues.AmbGerMunicipio)
-            {
-                ambGerStr = "Sistema Próprio do Município";
-            }
-            else if (_model.AmbGer == Models.NfseSchemaValues.AmbGerSefinNacional)
-            {
-                ambGerStr = "Sefin Nacional NFS-e";
-            }
-            else if (!string.IsNullOrEmpty(_model.AmbGer))
-            {
-                ambGerStr = _model.AmbGer;
-            }
+            string ambGerStr = string.IsNullOrEmpty(_model.AmbGer) ? "-" : _model.AmbGer;
 
             // Identificação do Tipo de Ambiente (NT Pág. 15)
-            string tpAmbStr = "-";
-            if (_model.TpAmb == Models.NfseSchemaValues.TpAmbProducao)
-            {
-                tpAmbStr = "Produção";
-            }
-            else if (_model.TpAmb == Models.NfseSchemaValues.TpAmbHomologacao)
-            {
-                tpAmbStr = "Homologação";
-            }
-            else if (!string.IsNullOrEmpty(_model.TpAmb))
-            {
-                tpAmbStr = _model.TpAmb;
-            }
+            string tpAmbStr = string.IsNullOrEmpty(_model.TpAmb) ? "-" : _model.TpAmb;
 
             // Textos da Direita do Cabeçalho
             string xLocEmi = Formatters.FormatMunUf(_model.XLocIncid, _model.CLocIncid, _model.Emitente.Endereco.UF);
@@ -365,13 +341,10 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText("SERVIÇO PRESTADO", fontBold7, BlackBrush, 0.40, currentY + 0.07, 4.50, 0.25, LeftAlign);
 
             string tribCod = Formatters.FormatTribNac(_model.Servico.CTribNac);
-            if (!string.IsNullOrEmpty(_model.Servico.CTribMun))
-            {
-                tribCod += " / " + _model.Servico.CTribMun;
-            }
+            tribCod += " / " + (string.IsNullOrEmpty(_model.Servico.CTribMun) ? "-" : _model.Servico.CTribMun);
             DrawMetadataField("Servico.Tributacao", tribCod, currentY);
 
-            string nbs = string.IsNullOrEmpty(_model.Servico.CNbs) ? "-" : _model.Servico.CNbs;
+            string nbs = string.IsNullOrEmpty(_model.Servico.CNbs) ? "-" : Formatters.FormatNbs(_model.Servico.CNbs);
             DrawMetadataField("Servico.NBS", nbs, currentY);
 
             string localPrest = _model.Servico.XMunPrestacao;
@@ -388,7 +361,7 @@ namespace NFSe.DANFSe.v2.Rendering
                 {
                     localPrest += " / " + ufPrest;
                 }
-                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "BR" : _model.Servico.CPaisPrestacao;
+                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "-" : _model.Servico.CPaisPrestacao;
                 localPrest += " / " + pais;
             }
             else if (!string.IsNullOrEmpty(_model.Servico.CLocPrestacao))
@@ -403,7 +376,7 @@ namespace NFSe.DANFSe.v2.Rendering
                 {
                     localPrest = $"Cód. {_model.Servico.CLocPrestacao}";
                 }
-                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "BR" : _model.Servico.CPaisPrestacao;
+                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "-" : _model.Servico.CPaisPrestacao;
                 localPrest += " / " + pais;
             }
             else
@@ -467,23 +440,10 @@ namespace NFSe.DANFSe.v2.Rendering
 
                 // Linha 3
                 string bmDesc = Formatters.FormatTipoBM(_model.Valores.TpBM, _model.Versao);
-                string nbm = _model.Servico.NBM;
-                string bmText = "-";
-                if (!string.IsNullOrEmpty(nbm) && !string.IsNullOrEmpty(bmDesc))
-                {
-                    bmText = $"{nbm} - {bmDesc}";
-                }
-                else if (!string.IsNullOrEmpty(nbm))
-                {
-                    bmText = nbm;
-                }
-                else if (!string.IsNullOrEmpty(bmDesc))
-                {
-                    bmText = bmDesc;
-                }
+                string bmText = string.IsNullOrEmpty(bmDesc) ? "-" : bmDesc;
                 DrawMetadataField("Trib.BeneficioMunicipal", bmText, currentY);
 
-                string calcBm = string.IsNullOrEmpty(_model.Valores.VCalcBM) ? "-" : _model.Valores.VCalcBM;
+                string calcBm = string.IsNullOrEmpty(_model.Valores.VCalcBM) ? "-" : Formatters.FormatCurrency(_model.Valores.VCalcBM);
                 DrawMetadataField("Trib.CalculoBM", calcBm, currentY);
 
                 string totalDed = string.IsNullOrEmpty(_model.Valores.VCalcDR) ? "-" : _model.Valores.VCalcDR;
@@ -492,7 +452,7 @@ namespace NFSe.DANFSe.v2.Rendering
 
                 // Linha 4
                 DrawMetadataField("Trib.BcIssqn", Formatters.FormatCurrency(_model.Valores.VBC), currentY);
-                DrawMetadataField("Trib.AliquotaAplicada", _model.Valores.PAliqAplic, currentY);
+                DrawMetadataField("Trib.AliquotaAplicada", string.IsNullOrEmpty(_model.Valores.PAliqAplic) ? "-" : Formatters.FormatPercent(_model.Valores.PAliqAplic), currentY);
                 DrawMetadataField("Trib.RetencaoIssqn", Formatters.FormatRetIss(_model.Servico.TpRetIssqn), currentY);
                 DrawMetadataField("Trib.IssqnApurado", Formatters.FormatCurrency(_model.Valores.VIssqn), currentY);
 
@@ -559,31 +519,37 @@ namespace NFSe.DANFSe.v2.Rendering
 
             // Linha 2
             DrawText("Exclusões e Reduções da Base de Cálculo", fontBold6, BlackBrush, 0.40, currentY + 0.71, 4.50, 0.20, LeftAlign);
-            DrawText("-", fontReg7, BlackBrush, 0.40, currentY + 1.01, 4.50, 0.25, LeftAlign);
+            
+            // Somatório de vDescIncond + vCalcReeRepRes + vISSQN + vPIS + vCOFINS conforme especificação oficial do DANFSe v2.0
+            double sumExclusoes = 0;
+            if (double.TryParse(_model.IbsCbs.VCalcReeRepRes, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCalcReeRepRes)) sumExclusoes += vCalcReeRepRes;
+            if (double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vIssqn)) sumExclusoes += vIssqn;
+            if (double.TryParse(_model.Servico.VPis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vPis)) sumExclusoes += vPis;
+            if (double.TryParse(_model.Servico.VCofins, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCofins)) sumExclusoes += vCofins;
+
+            string exclusoesStr = sumExclusoes > 0 ? sumExclusoes.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
+            DrawText(exclusoesStr, fontReg7, BlackBrush, 0.40, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             DrawText("Base de Cálculo Após Exclusões e Reduções", fontBold6, BlackBrush, 5.41, currentY + 0.71, 4.50, 0.20, LeftAlign);
             string bcIbs = string.IsNullOrEmpty(_model.IbsCbs.VBC) ? "-" : Formatters.FormatCurrency(_model.IbsCbs.VBC);
             DrawText(bcIbs, fontReg7, BlackBrush, 5.41, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             DrawText("Red. Alíquota IBS / Red. Alíquota CBS", fontBold6, BlackBrush, 10.51, currentY + 0.71, 4.50, 0.20, LeftAlign);
-            string redAliq = _model.IbsCbs.Uf.PRedAliqUF;
-            if (!string.IsNullOrEmpty(_model.IbsCbs.Mun.PRedAliqMun))
-                redAliq = string.IsNullOrEmpty(redAliq) ? _model.IbsCbs.Mun.PRedAliqMun : $"{redAliq} / {_model.IbsCbs.Mun.PRedAliqMun}";
-            if (!string.IsNullOrEmpty(_model.IbsCbs.Fed.PRedAliqCBS))
-                redAliq = string.IsNullOrEmpty(redAliq) ? _model.IbsCbs.Fed.PRedAliqCBS : $"{redAliq} / {_model.IbsCbs.Fed.PRedAliqCBS}";
-            if (string.IsNullOrEmpty(redAliq)) redAliq = "-";
+            string redUf = string.IsNullOrEmpty(_model.IbsCbs.Uf.PRedAliqUF) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Uf.PRedAliqUF);
+            string redMun = string.IsNullOrEmpty(_model.IbsCbs.Mun.PRedAliqMun) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Mun.PRedAliqMun);
+            string redFed = string.IsNullOrEmpty(_model.IbsCbs.Fed.PRedAliqCBS) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Fed.PRedAliqCBS);
+            string redAliq = (redUf == "-" && redMun == "-" && redFed == "-") ? "- / - / -" : $"{redUf} / {redMun} / {redFed}";
             DrawText(redAliq, fontReg7, BlackBrush, 10.51, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             DrawText("Alíquota - IBS UF / IBS MUN", fontBold6, BlackBrush, 15.62, currentY + 0.71, 4.50, 0.20, LeftAlign);
-            string aliqIbs = _model.IbsCbs.Uf.PIbsUF;
-            if (!string.IsNullOrEmpty(_model.IbsCbs.Mun.PIbsMun))
-                aliqIbs = string.IsNullOrEmpty(aliqIbs) ? _model.IbsCbs.Mun.PIbsMun : $"{aliqIbs} / {_model.IbsCbs.Mun.PIbsMun}";
-            if (string.IsNullOrEmpty(aliqIbs)) aliqIbs = "-";
+            string pIbsUfStr = string.IsNullOrEmpty(_model.IbsCbs.Uf.PIbsUF) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Uf.PIbsUF);
+            string pIbsMunStr = string.IsNullOrEmpty(_model.IbsCbs.Mun.PIbsMun) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Mun.PIbsMun);
+            string aliqIbs = $"{pIbsUfStr} / {pIbsMunStr}";
             DrawText(aliqIbs, fontReg7, BlackBrush, 15.62, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             // Linha 3
             DrawText("Alíq. Efetiva Municipal - IBS", fontBold6, BlackBrush, 0.40, currentY + 1.36, 4.50, 0.20, LeftAlign);
-            string aliqEfetMun = string.IsNullOrEmpty(_model.IbsCbs.Mun.PAliqEfetMun) ? "-" : _model.IbsCbs.Mun.PAliqEfetMun;
+            string aliqEfetMun = string.IsNullOrEmpty(_model.IbsCbs.Mun.PAliqEfetMun) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Mun.PAliqEfetMun);
             DrawText(aliqEfetMun, fontReg7, BlackBrush, 0.40, currentY + 1.66, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor Apurado Municipal - IBS", fontBold6, BlackBrush, 5.41, currentY + 1.36, 4.50, 0.20, LeftAlign);
@@ -591,7 +557,7 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText(vIbsMun, fontReg7, BlackBrush, 5.41, currentY + 1.66, 4.50, 0.25, LeftAlign);
 
             DrawText("Alíq. Efetiva Estadual - IBS", fontBold6, BlackBrush, 10.51, currentY + 1.36, 4.50, 0.20, LeftAlign);
-            string aliqEfetUf = string.IsNullOrEmpty(_model.IbsCbs.Uf.PAliqEfetUF) ? "-" : _model.IbsCbs.Uf.PAliqEfetUF;
+            string aliqEfetUf = string.IsNullOrEmpty(_model.IbsCbs.Uf.PAliqEfetUF) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Uf.PAliqEfetUF);
             DrawText(aliqEfetUf, fontReg7, BlackBrush, 10.51, currentY + 1.66, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor Apurado Estadual - IBS", fontBold6, BlackBrush, 15.62, currentY + 1.36, 4.50, 0.20, LeftAlign);
@@ -604,11 +570,11 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText(vIbsTot, fontReg7, BlackBrush, 0.40, currentY + 2.31, 4.50, 0.25, LeftAlign);
 
             DrawText("Alíquota - CBS", fontBold6, BlackBrush, 5.41, currentY + 2.01, 4.50, 0.20, LeftAlign);
-            string pCbs = string.IsNullOrEmpty(_model.IbsCbs.Fed.PCbs) ? "-" : _model.IbsCbs.Fed.PCbs;
+            string pCbs = string.IsNullOrEmpty(_model.IbsCbs.Fed.PCbs) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Fed.PCbs);
             DrawText(pCbs, fontReg7, BlackBrush, 5.41, currentY + 2.31, 4.50, 0.25, LeftAlign);
 
             DrawText("Alíquota Efetiva - CBS", fontBold6, BlackBrush, 10.51, currentY + 2.01, 4.50, 0.20, LeftAlign);
-            string aliqEfetCbs = string.IsNullOrEmpty(_model.IbsCbs.Fed.PAliqEfetCBS) ? "-" : _model.IbsCbs.Fed.PAliqEfetCBS;
+            string aliqEfetCbs = string.IsNullOrEmpty(_model.IbsCbs.Fed.PAliqEfetCBS) ? "-" : Formatters.FormatPercent(_model.IbsCbs.Fed.PAliqEfetCBS);
             DrawText(aliqEfetCbs, fontReg7, BlackBrush, 10.51, currentY + 2.31, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor Total Apurado - CBS", fontBold6, BlackBrush, 15.62, currentY + 2.01, 4.50, 0.20, LeftAlign);
@@ -963,20 +929,21 @@ namespace NFSe.DANFSe.v2.Rendering
 
         private string BuildTotalsTributosInfo()
         {
-            double fedTax = 0;
-            double.TryParse(_model.Servico.VRetIrrf, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double ir);
-            double.TryParse(_model.Servico.VRetCp, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cp);
-            double.TryParse(_model.Servico.VRetCsll, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cs);
-            double.TryParse(_model.Servico.VPis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double pis);
-            double.TryParse(_model.Servico.VCofins, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cof);
-            fedTax = ir + cp + cs + pis + cof;
+            string fedStr = "0,00 %";
+            string estStr = "0,00 %";
+            string munStr = "0,00 %";
 
-            double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double iss);
-            
-            string fedStr = fedTax > 0 ? fedTax.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
-            string munStr = iss > 0 ? iss.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
-            
-            return $"Totais Aproximados dos Tributos cfe. Lei nº 12.741/2012: Federais: {fedStr} ; Estaduais: - ; Municipais: {munStr}";
+            if (!string.IsNullOrEmpty(_model.Valores.PAliqAplic))
+            {
+                munStr = Formatters.FormatPercent(_model.Valores.PAliqAplic);
+            }
+            else
+            {
+                double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double iss);
+                if (iss > 0) munStr = iss.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+            }
+
+            return $"Totais aproximados dos Tributos cfe. Lei n° 12.741/2012: Federais: {fedStr}; Estaduais: {estStr}; Municipais: {munStr};";
         }
 
         private static bool ByteArraysEqual(byte[]? b1, byte[]? b2)

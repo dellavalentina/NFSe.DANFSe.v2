@@ -144,6 +144,29 @@ namespace NFSe.DANFSe.v2.Helpers
             };
         }
 
+        public static string FormatPercent(string val)
+        {
+            if (string.IsNullOrEmpty(val) || val == "-") return "-";
+
+            if (double.TryParse(val, NumberStyles.Any, CultureInfo.InvariantCulture, out double parsed))
+            {
+                return $"{parsed:0.00} %".Replace('.', ',');
+            }
+
+            return val.EndsWith("%") ? val : $"{val} %";
+        }
+
+        public static string FormatNbs(string nbs)
+        {
+            if (string.IsNullOrEmpty(nbs) || nbs == "-") return "-";
+            string digits = Regex.Replace(nbs, @"[^\d]", "");
+            if (digits.Length == 9)
+            {
+                return $"{digits[0]}.{digits.Substring(1, 4)}.{digits.Substring(5, 2)}.{digits.Substring(7, 2)}";
+            }
+            return nbs;
+        }
+
         public static string FormatTipoBM(string code, string versao)
         {
             if (string.IsNullOrEmpty(code)) return string.Empty;
@@ -165,7 +188,7 @@ namespace NFSe.DANFSe.v2.Helpers
                 {
                     "1" => "Isenção",
                     "2" => "Redução da BC",
-                    "3" => "Redução da BC em R$",
+                    "3" => "Redução por valor monetário",
                     "4" => "Alíquota Diferenciada",
                     _ => code
                 };
