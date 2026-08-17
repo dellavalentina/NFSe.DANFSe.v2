@@ -188,7 +188,7 @@ namespace NFSe.DANFSe.v2.Helpers
                 {
                     "1" => "Isenção",
                     "2" => "Redução da BC",
-                    "3" => "Redução por valor monetário",
+                    "3" => "Redução da BC em R$",
                     "4" => "Alíquota Diferenciada",
                     _ => code
                 };

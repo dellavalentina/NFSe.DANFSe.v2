@@ -1,5 +1,13 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.2.4] - 2026-08-17
+### Corrigido / Refatorado
+- **Ajustes Finais e Regras de Apuração de Cartórios**:
+  - **Local da Prestação & Incidência**: Restaurado o sufixo `BR` no local da prestação e incidência do ISSQN quando operado em território nacional (`Vitória / ES / BR`).
+  - **Benefício Municipal**: Restaurada a concatenação do código NBM com a descrição (`32053090200020 - Redução da BC em R$`).
+  - **Somatório de Exclusões (IBS/CBS)**: Incluído `vCalcBM` (dedução do benefício municipal) no somatório de exclusões (`vCalcBM + vCalcReeRepRes + vISSQN + vPIS + vCOFINS + vDescIncond`), exibindo `R$ 768,98` nas exclusões.
+  - **Base de Cálculo do IBS/CBS**: Atualizado o cálculo do IBS/CBS para expurgar `vCalcBM` e demais exclusões da base (`vServ - sumExclusoes`), fixando a base em `R$ 2.087,70`.
+
 ## [0.2.3] - 2026-08-17
 ### Corrigido / Refatorado
 - **Adequação ao DANFSe Oficial do Emissor Nacional (Anexo B)**:

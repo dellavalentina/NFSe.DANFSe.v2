@@ -376,7 +376,7 @@ namespace NFSe.DANFSe.v2.Rendering
                 {
                     localPrest = $"Cód. {_model.Servico.CLocPrestacao}";
                 }
-                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "-" : _model.Servico.CPaisPrestacao;
+                string pais = (string.IsNullOrEmpty(_model.Servico.CPaisPrestacao) || _model.Servico.CPaisPrestacao == "1058") ? "BR" : _model.Servico.CPaisPrestacao;
                 localPrest += " / " + pais;
             }
             else
@@ -440,7 +440,20 @@ namespace NFSe.DANFSe.v2.Rendering
 
                 // Linha 3
                 string bmDesc = Formatters.FormatTipoBM(_model.Valores.TpBM, _model.Versao);
-                string bmText = string.IsNullOrEmpty(bmDesc) ? "-" : bmDesc;
+                string nbm = _model.Servico.NBM;
+                string bmText = "-";
+                if (!string.IsNullOrEmpty(nbm) && !string.IsNullOrEmpty(bmDesc))
+                {
+                    bmText = $"{nbm} - {bmDesc}";
+                }
+                else if (!string.IsNullOrEmpty(nbm))
+                {
+                    bmText = nbm;
+                }
+                else if (!string.IsNullOrEmpty(bmDesc))
+                {
+                    bmText = bmDesc;
+                }
                 DrawMetadataField("Trib.BeneficioMunicipal", bmText, currentY);
 
                 string calcBm = string.IsNullOrEmpty(_model.Valores.VCalcBM) ? "-" : Formatters.FormatCurrency(_model.Valores.VCalcBM);
@@ -520,8 +533,9 @@ namespace NFSe.DANFSe.v2.Rendering
             // Linha 2
             DrawText("Exclusões e Reduções da Base de Cálculo", fontBold6, BlackBrush, 0.40, currentY + 0.71, 4.50, 0.20, LeftAlign);
             
-            // Somatório de vDescIncond + vCalcReeRepRes + vISSQN + vPIS + vCOFINS conforme especificação oficial do DANFSe v2.0
+            // Somatório de vDescIncond + vCalcBM + vCalcReeRepRes + vISSQN + vPIS + vCOFINS conforme especificação oficial do DANFSe v2.0
             double sumExclusoes = 0;
+            if (double.TryParse(_model.Valores.VCalcBM, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCalcBm)) sumExclusoes += vCalcBm;
             if (double.TryParse(_model.IbsCbs.VCalcReeRepRes, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCalcReeRepRes)) sumExclusoes += vCalcReeRepRes;
             if (double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vIssqn)) sumExclusoes += vIssqn;
             if (double.TryParse(_model.Servico.VPis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vPis)) sumExclusoes += vPis;
@@ -531,7 +545,19 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText(exclusoesStr, fontReg7, BlackBrush, 0.40, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             DrawText("Base de Cálculo Após Exclusões e Reduções", fontBold6, BlackBrush, 5.41, currentY + 0.71, 4.50, 0.20, LeftAlign);
-            string bcIbs = string.IsNullOrEmpty(_model.IbsCbs.VBC) ? "-" : Formatters.FormatCurrency(_model.IbsCbs.VBC);
+            
+            // Base de cálculo do IBS/CBS: vServ / vLiq deduzido do somatório de exclusões/reduções (incluindo vCalcBM)
+            double.TryParse(_model.Valores.VLiq, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vServVal);
+            string bcIbs;
+            if (vServVal > 0 && sumExclusoes > 0)
+            {
+                double bcCalculada = Math.Max(0, vServVal - sumExclusoes);
+                bcIbs = bcCalculada.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+            }
+            else
+            {
+                bcIbs = string.IsNullOrEmpty(_model.IbsCbs.VBC) ? "-" : Formatters.FormatCurrency(_model.IbsCbs.VBC);
+            }
             DrawText(bcIbs, fontReg7, BlackBrush, 5.41, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             DrawText("Red. Alíquota IBS / Red. Alíquota CBS", fontBold6, BlackBrush, 10.51, currentY + 0.71, 4.50, 0.20, LeftAlign);
