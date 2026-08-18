@@ -1,5 +1,9 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.2.5] - 2026-08-18
+### Revertido / Corrigido
+- **Reversão da Inclusão de `vCalcBM` nas Exclusões do IBS/CBS**: Revertida a inclusão manual de `vCalcBM` no somatório de exclusões/reduções da base do IBS/CBS e restaurada a exibição direta da tag `<vBC>` do XML (`R$ 2.746,80`), mantendo estrita fidelidade à especificação oficial do DANFSe v2.0 (`vDescIncond + vCalcReeRepRes + vISSQN + vPIS + vCOFINS`).
+
 ## [0.2.4] - 2026-08-17
 ### Corrigido / Refatorado
 - **Ajustes Finais e Regras de Apuração de Cartórios**:
