@@ -540,7 +540,7 @@ namespace NFSe.DANFSe.v2.Rendering
             if (double.TryParse(_model.Servico.VPis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vPis)) sumExclusoes += vPis;
             if (double.TryParse(_model.Servico.VCofins, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCofins)) sumExclusoes += vCofins;
 
-            string exclusoesStr = sumExclusoes > 0 ? sumExclusoes.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
+            string exclusoesStr = sumExclusoes > 0 ? sumExclusoes.ToString("C2", Helpers.Formatters.PtBrCurrency) : "-";
             DrawText(exclusoesStr, fontReg7, BlackBrush, 0.40, currentY + 1.01, 4.50, 0.25, LeftAlign);
 
             DrawText("Base de Cálculo Após Exclusões e Reduções", fontBold6, BlackBrush, 5.41, currentY + 0.71, 4.50, 0.20, LeftAlign);
@@ -626,7 +626,7 @@ namespace NFSe.DANFSe.v2.Rendering
             double.TryParse(_model.IbsCbs.VIbsTot, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double ibsVal);
             double.TryParse(_model.IbsCbs.VCbs, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cbsVal);
             double totIbsCbsVal = ibsVal + cbsVal;
-            string totIbsCbs = totIbsCbsVal > 0 ? totIbsCbsVal.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) : "-";
+            string totIbsCbs = totIbsCbsVal > 0 ? totIbsCbsVal.ToString("C2", Helpers.Formatters.PtBrCurrency) : "-";
             DrawText(totIbsCbs, fontReg7, BlackBrush, 10.51, currentY + 1.06, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor Líquido da NFS-e + IBS/CBS", fontBold6, BlackBrush, 15.62, currentY + 0.76, 4.50, 0.20, LeftAlign);
@@ -640,7 +640,7 @@ namespace NFSe.DANFSe.v2.Rendering
                 // Se o XML veio omitindo o IBS/CBS por fora (vTotNfXmlVal == vLiqVal < vTotNfEsperado), ajusta dinamicamente
                 if (Math.Abs(vTotNfXmlVal - vLiqVal) < 0.01 && vTotNfXmlVal < (vTotNfEsperado - 0.001))
                 {
-                    totNf = vTotNfEsperado.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                    totNf = vTotNfEsperado.ToString("C2", Helpers.Formatters.PtBrCurrency);
                 }
                 else
                 {
@@ -940,23 +940,38 @@ namespace NFSe.DANFSe.v2.Rendering
             return result;
         }
 
+        // A NT 008 (tabela de leiaute) nomeia a fonte destes valores: vTotTribFed/Est/Mun — o grupo totTrib da
+        // Lei 12.741/2012, calculado pela tabela IBPT. Retenções e ISS são outras grandezas: numa nota com
+        // vTotTribMun=22,73 e ISS=15,00, imprimir o ISS declara valor errado num campo exigido por lei.
+        // A NT 008 (tabela de leiaute e Nota 10, pág. 21) nomeia a fonte destes valores:
+        // vTotTribFed/Est/Mun ou pTotTribFed/Est/Mun — o grupo totTrib da Lei 12.741/2012 (IBPT).
+        // A informação pode ser preenchida com valores monetários OU percentuais:
+        // "Totais Aproximados dos Tributos cfe. Lei nº 12.741/2012: Federais: R$ ou % ; Estaduais: R$ ou % ; Municipais: R$ ou %"
         private string BuildTotalsTributosInfo()
         {
-            string fedStr = "0,00 %";
-            string estStr = "0,00 %";
-            string munStr = "0,00 %";
-
-            if (!string.IsNullOrEmpty(_model.Valores.PAliqAplic))
+            static string FormatTribValue(string? valorMonetario, string? percentual)
             {
-                munStr = Formatters.FormatPercent(_model.Valores.PAliqAplic);
-            }
-            else
-            {
-                double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double iss);
-                if (iss > 0) munStr = iss.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                if (double.TryParse(valorMonetario, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double v) && v > 0)
+                {
+                    return v.ToString("C2", Helpers.Formatters.PtBrCurrency);
+                }
+
+                if (double.TryParse(percentual, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double p) && p > 0)
+                {
+                    return Helpers.Formatters.FormatPercent(percentual);
+                }
+
+                return "-";
             }
 
-            return $"Totais aproximados dos Tributos cfe. Lei n° 12.741/2012: Federais: {fedStr}; Estaduais: {estStr}; Municipais: {munStr};";
+            string fedStr = FormatTribValue(_model.Valores.VTotTribFed, _model.Valores.PTotTribFed);
+            string estStr = FormatTribValue(_model.Valores.VTotTribEst, _model.Valores.PTotTribEst);
+            string munStr = FormatTribValue(_model.Valores.VTotTribMun, _model.Valores.PTotTribMun);
+
+            return "Totais Aproximados dos Tributos cfe. Lei nº 12.741/2012: "
+                + $"Federais: {fedStr} ; "
+                + $"Estaduais: {estStr} ; "
+                + $"Municipais: {munStr}";
         }
 
         private static bool ByteArraysEqual(byte[]? b1, byte[]? b2)

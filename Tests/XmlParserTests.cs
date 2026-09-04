@@ -57,5 +57,25 @@ namespace NFSe.DANFSe.v2.Tests
             Assert.True(model.IsCancelled);
             Assert.False(model.IsSubstituted);
         }
-    }
+    
+        /// <summary>
+        /// Os "Totais Aproximados dos Tributos" (Lei 12.741/2012) exigidos pela NT 008 vêm do grupo totTrib —
+        /// vTotTribFed/Est/Mun — e não das retenções nem do ISS. A amostra usa valores DISTINTOS de propósito:
+        /// em danfse-terceiros.xml o vTotTribMun coincide com o vISSQN (34,75), o que torna a diferença
+        /// invisível.
+        /// </summary>
+        [Fact]
+        public void TestParseTotaisAproximadosTributos()
+        {
+            string xmlPath = Path.Combine(SamplesPath, "danfse-tottrib-distinto.xml");
+            Assert.True(File.Exists(xmlPath), $"O arquivo XML de teste não foi encontrado em: {xmlPath}");
+
+            DanfseModel model = DanfseXmlParser.Parse(File.ReadAllText(xmlPath));
+
+            Assert.Equal("100.88", model.Valores.VTotTribFed);
+            Assert.Equal("0.00", model.Valores.VTotTribEst);
+            Assert.Equal("22.73", model.Valores.VTotTribMun);
+            Assert.Equal("15.00", model.Valores.VIssqn); // o ISS é outra grandeza
+        }
+}
 }
