@@ -77,5 +77,18 @@ namespace NFSe.DANFSe.v2.Tests
             Assert.Equal("22.73", model.Valores.VTotTribMun);
             Assert.Equal("15.00", model.Valores.VIssqn); // o ISS é outra grandeza
         }
-}
+
+        [Fact]
+        public void TestParseTotaisAproximadosTributosPercentuais()
+        {
+            string xmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
+            Assert.True(File.Exists(xmlPath));
+
+            DanfseModel model = DanfseXmlParser.Parse(File.ReadAllText(xmlPath));
+
+            Assert.Equal("0.00", model.Valores.PTotTribFed);
+            Assert.Equal("0.00", model.Valores.PTotTribEst);
+            Assert.Equal("5.00", model.Valores.PTotTribMun);
+        }
+    }
 }

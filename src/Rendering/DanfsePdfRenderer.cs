@@ -127,9 +127,17 @@ namespace NFSe.DANFSe.v2.Rendering
             // Identificação do Tipo de Ambiente (NT Pág. 15)
             string tpAmbStr = string.IsNullOrEmpty(_model.TpAmb) ? "-" : _model.TpAmb;
 
-            // Textos da Direita do Cabeçalho
-            string xLocEmi = Formatters.FormatMunUf(_model.XLocIncid, _model.CLocIncid, _model.Emitente.Endereco.UF);
-            DrawText($"Município: {TruncateTextToWidth(xLocEmi, fontReg8, CmToPt(4.50))}", fontReg8, BlackBrush, 15.62, 0.45, 5.00, 0.35, LeftAlign);
+            // Textos da Direita do Cabeçalho (NT 008 Pág. 16)
+            // Obs.: Não exibir, quando o item do cód. de tributação nacional informado for 99.
+            bool omitirMunicipio = !string.IsNullOrEmpty(_model.Servico.CTribNac) && _model.Servico.CTribNac.StartsWith("99");
+            if (!omitirMunicipio)
+            {
+                string munEmi = !string.IsNullOrEmpty(_model.XLocEmi) ? _model.XLocEmi : _model.Emitente.Endereco.XMun;
+                string cMunEmi = !string.IsNullOrEmpty(_model.Dps.CLocEmi) ? _model.Dps.CLocEmi : _model.Emitente.Endereco.CMun;
+                string ufEmi = _model.Emitente.Endereco.UF;
+                string xLocEmi = Formatters.FormatMunUf(munEmi, cMunEmi, ufEmi);
+                DrawText($"Município: {TruncateTextToWidth(xLocEmi, fontReg8, CmToPt(4.50))}", fontReg8, BlackBrush, 15.62, 0.45, 5.00, 0.35, LeftAlign);
+            }
             DrawText($"Ambiente Gerador: {TruncateTextToWidth(ambGerStr, fontReg6, CmToPt(4.50))}", fontReg6, BlackBrush, 15.62, 0.85, 5.00, 0.25, LeftAlign);
             DrawText($"Tipo de Ambiente: {TruncateTextToWidth(tpAmbStr, fontReg6, CmToPt(4.50))}", fontReg6, BlackBrush, 15.62, 1.15, 5.00, 0.25, LeftAlign);
 
@@ -606,13 +614,16 @@ namespace NFSe.DANFSe.v2.Rendering
             DrawText("VALOR TOTAL DA NFS-E", fontBold7, BlackBrush, 0.40, currentY + 0.07, 4.50, 0.25, LeftAlign);
 
             DrawText("Valor da Operação / Serviço", fontBold6, BlackBrush, 5.41, currentY + 0.07, 4.50, 0.20, LeftAlign);
-            DrawText(Formatters.FormatCurrency(_model.Valores.VLiq), fontReg7, BlackBrush, 5.41, currentY + 0.37, 4.50, 0.25, LeftAlign);
+            string vOperacao = !string.IsNullOrEmpty(_model.Valores.VServ) ? _model.Valores.VServ : _model.Valores.VLiq;
+            DrawText(Formatters.FormatCurrency(vOperacao), fontReg7, BlackBrush, 5.41, currentY + 0.37, 4.50, 0.25, LeftAlign);
 
             DrawText("Desconto Incondicionado", fontBold6, BlackBrush, 10.51, currentY + 0.07, 4.50, 0.20, LeftAlign);
-            DrawText("-", fontReg7, BlackBrush, 10.51, currentY + 0.37, 4.50, 0.25, LeftAlign);
+            string descIncond = !string.IsNullOrEmpty(_model.Valores.VDescIncond) ? Formatters.FormatCurrency(_model.Valores.VDescIncond) : "-";
+            DrawText(descIncond, fontReg7, BlackBrush, 10.51, currentY + 0.37, 4.50, 0.25, LeftAlign);
 
             DrawText("Desconto Condicionado", fontBold6, BlackBrush, 15.62, currentY + 0.07, 4.50, 0.20, LeftAlign);
-            DrawText("-", fontReg7, BlackBrush, 15.62, currentY + 0.37, 4.50, 0.25, LeftAlign);
+            string descCond = !string.IsNullOrEmpty(_model.Valores.VDescCond) ? Formatters.FormatCurrency(_model.Valores.VDescCond) : "-";
+            DrawText(descCond, fontReg7, BlackBrush, 15.62, currentY + 0.37, 4.50, 0.25, LeftAlign);
 
             // Linha 2
             DrawText("Total das Retenções (ISSQN / Federais)", fontBold6, BlackBrush, 0.40, currentY + 0.76, 4.50, 0.20, LeftAlign);
@@ -958,7 +969,7 @@ namespace NFSe.DANFSe.v2.Rendering
 
                 if (double.TryParse(percentual, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double p) && p > 0)
                 {
-                    return Helpers.Formatters.FormatPercent(percentual);
+                    return Helpers.Formatters.FormatPercent(percentual!);
                 }
 
                 return "-";

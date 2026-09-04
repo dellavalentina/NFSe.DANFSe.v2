@@ -12,6 +12,7 @@ namespace NFSe.DANFSe.v2.Models
         public string TpAmb { get; set; } = "1"; // 1 = Produção, 2 = Homologação
         public string AmbGer { get; set; } = string.Empty;
         public string Versao { get; set; } = "1.01"; // Versão da NFS-e (1.00 ou 1.01)
+        public string XLocEmi { get; set; } = string.Empty; // Município emissor da NFS-e (xLocEmi)
         public string CLocIncid { get; set; } = string.Empty;
         public string XLocIncid { get; set; } = string.Empty;
         public string XTribNac { get; set; } = string.Empty;
@@ -84,6 +85,9 @@ namespace NFSe.DANFSe.v2.Models
 
     public class ValoresData
     {
+        public string VServ { get; set; } = string.Empty; // Valor da operação / serviço bruto (vServ)
+        public string VDescIncond { get; set; } = string.Empty; // Desconto incondicionado (vDescIncond)
+        public string VDescCond { get; set; } = string.Empty; // Desconto condicionado (vDescCond)
         public string VLiq { get; set; } = string.Empty;
         public string VTotalRet { get; set; } = string.Empty;
         public string TpBM { get; set; } = string.Empty; // Benefício Municipal
@@ -97,6 +101,9 @@ namespace NFSe.DANFSe.v2.Models
         public string VTotTribFed { get; set; } = string.Empty;
         public string VTotTribEst { get; set; } = string.Empty;
         public string VTotTribMun { get; set; } = string.Empty;
+        public string PTotTribFed { get; set; } = string.Empty;
+        public string PTotTribEst { get; set; } = string.Empty;
+        public string PTotTribMun { get; set; } = string.Empty;
     }
 
     public class IbsCbsData
@@ -154,6 +161,7 @@ namespace NFSe.DANFSe.v2.Models
         public string NDPS { get; set; } = string.Empty;
         public string DCompet { get; set; } = string.Empty;
         public string TpEmit { get; set; } = string.Empty;
+        public string CLocEmi { get; set; } = string.Empty; // Código IBGE do município emissor (cLocEmi)
     }
 
     public class ServicoData

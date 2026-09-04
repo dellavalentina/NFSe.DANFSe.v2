@@ -236,5 +236,64 @@ namespace NFSe.DANFSe.v2.Tests
             Console.WriteLine($"PDFs de teste de autoFix gerados em:\n - {pathOriginal}\n - {pathFixed}\n - {pathAlreadyCorrect}");
         }
 
+        [Fact]
+        public void TestMunicipioEmissaoParserAndHeader()
+        {
+            // 1. danfse-normal.xml
+            string normalXmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
+            Assert.True(File.Exists(normalXmlPath));
+            string normalContent = File.ReadAllText(normalXmlPath);
+            DanfseModel normalModel = DanfseXmlParser.Parse(normalContent);
+
+            Assert.Equal("Vitória", normalModel.XLocEmi);
+            Assert.Equal("3205309", normalModel.Dps.CLocEmi);
+            Assert.Equal("Vitória", normalModel.XLocIncid);
+            Assert.Equal("3205309", normalModel.CLocIncid);
+
+            byte[] normalPdf = DanfsePdfRenderer.GeneratePdf(normalModel);
+            Assert.NotEmpty(normalPdf);
+
+            // 2. danfse-terceiros.xml onde xLocEmi difere de xLocIncid
+            string tercXmlPath = Path.Combine(SamplesPath, "danfse-terceiros.xml");
+            Assert.True(File.Exists(tercXmlPath));
+            string tercContent = File.ReadAllText(tercXmlPath);
+            DanfseModel tercModel = DanfseXmlParser.Parse(tercContent);
+
+            Assert.Equal("LocalEmissao", tercModel.XLocEmi);
+            Assert.Equal("3288888", tercModel.Dps.CLocEmi);
+            Assert.Equal("Municipio", tercModel.XLocIncid);
+            Assert.Equal("3288888", tercModel.CLocIncid);
+
+            byte[] tercPdf = DanfsePdfRenderer.GeneratePdf(tercModel);
+            Assert.NotEmpty(tercPdf);
+
+            // 3. Regra de supressão NT-008 quando cTribNac inicia com 99
+            normalModel.Servico.CTribNac = "990101";
+            byte[] suppressedPdf = DanfsePdfRenderer.GeneratePdf(normalModel);
+            Assert.NotEmpty(suppressedPdf);
+        }
+
+        [Fact]
+        public void TestValorOperacaoServicoBrutoVsLiquido()
+        {
+            string normalXmlPath = Path.Combine(SamplesPath, "danfse-normal.xml");
+            Assert.True(File.Exists(normalXmlPath));
+            string normalContent = File.ReadAllText(normalXmlPath);
+            DanfseModel model = DanfseXmlParser.Parse(normalContent);
+
+            // Valida parse de vServ da DPS no XML normal
+            Assert.Equal("96.05", model.Valores.VServ);
+            Assert.Equal("96.05", model.Valores.VLiq);
+
+            // Simula nota com retenções e descontos: vServ (bruto) != vLiq (líquido)
+            model.Valores.VServ = "10000.00";
+            model.Valores.VDescIncond = "200.00";
+            model.Valores.VDescCond = "100.00";
+            model.Valores.VTotalRet = "500.00";
+            model.Valores.VLiq = "9300.00";
+
+            byte[] pdf = DanfsePdfRenderer.GeneratePdf(model);
+            Assert.NotEmpty(pdf);
+        }
     }
 }

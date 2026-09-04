@@ -54,6 +54,7 @@ namespace NFSe.DANFSe.v2.Parser
                 NNFSe = GetElementValue(infNFSe, ns + "nNFSe"),
                 CStat = GetElementValue(infNFSe, ns + "cStat"),
                 DhProc = GetElementValue(infNFSe, ns + "dhProc"),
+                XLocEmi = GetElementValue(infNFSe, ns + "xLocEmi"),
                 CLocIncid = GetElementValue(infNFSe, ns + "cLocIncid"),
                 XLocIncid = GetElementValue(infNFSe, ns + "xLocIncid"),
                 XTribNac = GetElementValue(infNFSe, ns + "xTribNac"),
@@ -85,13 +86,21 @@ namespace NFSe.DANFSe.v2.Parser
                     VIssqn = GetElementValue(valores, ns + "vISSQN")
                 };
 
-                // totTrib vive em trib/totTrib/vTotTrib, fora do grupo <valores> lido acima.
+                // totTrib vive em trib/totTrib/vTotTrib ou pTotTrib, fora do grupo <valores> lido acima.
                 var totTrib = infNFSe.Descendants(ns + "vTotTrib").FirstOrDefault();
                 if (totTrib != null)
                 {
                     modelResult.Valores.VTotTribFed = GetElementValue(totTrib, ns + "vTotTribFed");
                     modelResult.Valores.VTotTribEst = GetElementValue(totTrib, ns + "vTotTribEst");
                     modelResult.Valores.VTotTribMun = GetElementValue(totTrib, ns + "vTotTribMun");
+                }
+
+                var pTotTrib = infNFSe.Descendants(ns + "pTotTrib").FirstOrDefault();
+                if (pTotTrib != null)
+                {
+                    modelResult.Valores.PTotTribFed = GetElementValue(pTotTrib, ns + "pTotTribFed");
+                    modelResult.Valores.PTotTribEst = GetElementValue(pTotTrib, ns + "pTotTribEst");
+                    modelResult.Valores.PTotTribMun = GetElementValue(pTotTrib, ns + "pTotTribMun");
                 }
             }
 
@@ -118,7 +127,8 @@ namespace NFSe.DANFSe.v2.Parser
                         Serie = GetElementValue(infDPS, dpsNs + "serie"),
                         NDPS = GetElementValue(infDPS, dpsNs + "nDPS"),
                         DCompet = GetElementValue(infDPS, dpsNs + "dCompet"),
-                        TpEmit = GetElementValue(infDPS, dpsNs + "tpEmit")
+                        TpEmit = GetElementValue(infDPS, dpsNs + "tpEmit"),
+                        CLocEmi = GetElementValue(infDPS, dpsNs + "cLocEmi")
                     };
 
                     // Prestador
@@ -154,6 +164,24 @@ namespace NFSe.DANFSe.v2.Parser
                     if (serv != null)
                     {
                         modelResult.Servico = ParseServico(serv, infDPS, dpsNs);
+                    }
+
+                    // Valores da DPS (vServ, descontos)
+                    var valoresDps = infDPS.Element(dpsNs + "valores");
+                    if (valoresDps != null)
+                    {
+                        var vServPrest = valoresDps.Element(dpsNs + "vServPrest");
+                        if (vServPrest != null)
+                        {
+                            modelResult.Valores.VServ = GetElementValue(vServPrest, dpsNs + "vServ");
+                        }
+
+                        var vDesc = valoresDps.Element(dpsNs + "vDescCondIncond");
+                        if (vDesc != null)
+                        {
+                            modelResult.Valores.VDescIncond = GetElementValue(vDesc, dpsNs + "vDescIncond");
+                            modelResult.Valores.VDescCond = GetElementValue(vDesc, dpsNs + "vDescCond");
+                        }
                     }
 
                     // Complementa IBS/CBS com dados da DPS (ex: cIndOp, CST, cClassTrib) se existirem
