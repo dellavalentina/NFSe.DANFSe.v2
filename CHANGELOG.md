@@ -1,5 +1,17 @@
 # Changelog - NFSe.DANFSe.v2
 
+## [0.3.0] - 2026-11-25
+### Adicionado / Aprimorado
+- **Suporte Retrocompatível ao Leiaute `SefinNacional_1.6` (Reforma Tributária / CNPJ Alfanumérico)**:
+  - **Finalidade (`<finNFSe>`) na Raiz de `<infDPS>`**: O `DanfseXmlParser` agora lê `<finNFSe>` diretamente de `<infDPS>` (padrão `SefinNacional_1.6`) mantendo fallback para `<IBSCBS>/<finNFSe>` (padrão `SefinNacional_1.5`).
+  - **Deduções / Ajustes da Base de Cálculo do ISSQN (`<vCalcAjusteBCISSQN>`)**: Adicionado fallback automático de `<vCalcDR>` para `<vCalcAjusteBCISSQN>` em `<infNFSe>/<valores>`, aplicando formatação monetária no quadro de Tributação Municipal do DANFSe.
+  - **Ajustes da Base de Cálculo do IBS/CBS (`<vCalcAjusteBCIBSCBS>` e `<vCalcAjusteBCLocImoveis>`)**: Adicionadas as propriedades `VCalcAjusteBCLocImoveis` e `VCalcAjusteBCIBSCBS` em `IbsCbsData` e incluídas no cálculo de "Exclusões e Reduções da Base de Cálculo" do quadro IBS/CBS em conjunto com `vCalcReeRepRes`.
+  - **Tags `<CST>` e `<cClassTrib>` Filhas Diretas de `<trib>`**: Suporte à leitura de `<CST>` e `<cClassTrib>` diretamente em `<IBSCBS>/<valores>/<trib>` (`TCRTCInfoTribIBSCBS` da `SefinNacional_1.6`), mantendo fallback para `<trib>/<gIBSCBS>` (`SefinNacional_1.5`).
+  - **Destinatário (`<dest>`) em `<IBSCBS>`**: O parser agora localiza `<dest>` tanto como filho direto de `<infDPS>` quanto dentro de `<infDPS>/<IBSCBS>/<dest>`.
+  - **Versão do Aplicativo (`<verAplic>`)**: Adicionada propriedade `VerAplic` em `DanfseModel` mapeada a partir de `<infNFSe>/<verAplic>`.
+  - **Suporte a CNPJ Alfanumérico (`[0-9A-Z]{14}`)**: `Formatters.FormatDocumento` agora preserva letras maiúsculas e aplica a máscara `XX.XXX.XXX/XXXX-XX` para CNPJs alfanuméricos, mantendo a máscara de CPF (`000.000.000-00`).
+  - **Novos Códigos de Retenção PIS/COFINS (`TSTipoRetPISCofins`)**: Expandido `Formatters.FormatRetPisCofins` para contemplar todos os códigos de `0` a `9` do esquema v1.01 atualizado.
+
 ## [0.2.6] - 2026-09-04
 ### Corrigido / Aprimorado
 - **Município de Emissão no Cabeçalho (Issue #1)**: Corrigido o campo "Município" no cabeçalho para exibir o município emissor da NFS-e (`xLocEmi` / `cLocEmi` / `UF`) em vez do município de incidência do ISSQN (`xLocIncid`), e adicionada regra de supressão da NT 008 quando o código de tributação nacional (`cTribNac`) pertencer ao grupo `99`.

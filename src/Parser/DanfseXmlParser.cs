@@ -60,6 +60,7 @@ namespace NFSe.DANFSe.v2.Parser
                 XTribNac = GetElementValue(infNFSe, ns + "xTribNac"),
                 XNBS = GetElementValue(infNFSe, ns + "xNBS"),
                 AmbGer = GetElementValue(infNFSe, ns + "ambGer"),
+                VerAplic = GetElementValue(infNFSe, ns + "verAplic"),
                 Versao = xmlVersao
             };
 
@@ -74,13 +75,19 @@ namespace NFSe.DANFSe.v2.Parser
             var valores = infNFSe.Element(ns + "valores");
             if (valores != null)
             {
+                string vCalcDr = GetElementValue(valores, ns + "vCalcDR");
+                if (string.IsNullOrEmpty(vCalcDr))
+                {
+                    vCalcDr = GetElementValue(valores, ns + "vCalcAjusteBCISSQN");
+                }
+
                 modelResult.Valores = new ValoresData
                 {
                     VLiq = GetElementValue(valores, ns + "vLiq"),
                     VTotalRet = GetElementValue(valores, ns + "vTotalRet"),
                     TpBM = GetElementValue(valores, ns + "tpBM"),
                     VCalcBM = GetElementValue(valores, ns + "vCalcBM"),
-                    VCalcDR = GetElementValue(valores, ns + "vCalcDR"),
+                    VCalcDR = vCalcDr,
                     VBC = GetElementValue(valores, ns + "vBC"),
                     PAliqAplic = GetElementValue(valores, ns + "pAliqAplic"),
                     VIssqn = GetElementValue(valores, ns + "vISSQN")
@@ -131,6 +138,13 @@ namespace NFSe.DANFSe.v2.Parser
                         CLocEmi = GetElementValue(infDPS, dpsNs + "cLocEmi")
                     };
 
+                    // No leiaute SefinNacional_1.6, finNFSe passou a ser filho direto de infDPS
+                    string finNfseDps = GetElementValue(infDPS, dpsNs + "finNFSe");
+                    if (!string.IsNullOrEmpty(finNfseDps))
+                    {
+                        modelResult.IbsCbs.FinNFSe = finNfseDps;
+                    }
+
                     // Prestador
                     var prest = infDPS.Element(dpsNs + "prest");
                     if (prest != null)
@@ -145,8 +159,9 @@ namespace NFSe.DANFSe.v2.Parser
                         modelResult.Tomador = ParseParty(toma, dpsNs);
                     }
 
-                    // Destinatário
-                    var dest = infDPS.Element(dpsNs + "dest");
+                    // Destinatário (pode estar direto em infDPS ou dentro de infDPS/IBSCBS/dest conforme XSD v1.01)
+                    var dest = infDPS.Element(dpsNs + "dest")
+                        ?? infDPS.Element(dpsNs + "IBSCBS")?.Element(dpsNs + "dest");
                     if (dest != null)
                     {
                         modelResult.Destinatario = ParseParty(dest, dpsNs);
@@ -448,7 +463,23 @@ namespace NFSe.DANFSe.v2.Parser
                 string vcalc = GetElementValue(valores, ns + "vCalcReeRepRes");
                 if (!string.IsNullOrEmpty(vcalc)) data.VCalcReeRepRes = vcalc;
 
+                string vcalcLoc = GetElementValue(valores, ns + "vCalcAjusteBCLocImoveis");
+                if (!string.IsNullOrEmpty(vcalcLoc)) data.VCalcAjusteBCLocImoveis = vcalcLoc;
+
+                string vcalcIbsCbs = GetElementValue(valores, ns + "vCalcAjusteBCIBSCBS");
+                if (!string.IsNullOrEmpty(vcalcIbsCbs)) data.VCalcAjusteBCIBSCBS = vcalcIbsCbs;
+
                 var trib = valores.Element(ns + "trib");
+                if (trib != null)
+                {
+                    // No leiaute SefinNacional_1.6, CST e cClassTrib são filhos diretos de <trib>
+                    string cstTrib = GetElementValue(trib, ns + "CST");
+                    if (!string.IsNullOrEmpty(cstTrib)) data.Cst = cstTrib;
+
+                    string cclassTrib = GetElementValue(trib, ns + "cClassTrib");
+                    if (!string.IsNullOrEmpty(cclassTrib)) data.CClassTrib = cclassTrib;
+                }
+
                 var gIBSCBS = trib != null ? trib.Element(ns + "gIBSCBS") : elem.Element(ns + "gIBSCBS");
                 if (gIBSCBS != null)
                 {

@@ -11,6 +11,7 @@ namespace NFSe.DANFSe.v2.Models
         public string DhProc { get; set; } = string.Empty; // Data/Hora Processamento
         public string TpAmb { get; set; } = "1"; // 1 = Produção, 2 = Homologação
         public string AmbGer { get; set; } = string.Empty;
+        public string VerAplic { get; set; } = string.Empty; // Versão do aplicativo que gerou a NFS-e (ex: SefinNacional_1.6.0)
         public string Versao { get; set; } = "1.01"; // Versão da NFS-e (1.00 ou 1.01)
         public string XLocEmi { get; set; } = string.Empty; // Município emissor da NFS-e (xLocEmi)
         public string CLocIncid { get; set; } = string.Empty;
@@ -118,6 +119,8 @@ namespace NFSe.DANFSe.v2.Models
         // Valores IBS/CBS
         public string VBC { get; set; } = string.Empty;
         public string VCalcReeRepRes { get; set; } = string.Empty;
+        public string VCalcAjusteBCLocImoveis { get; set; } = string.Empty;
+        public string VCalcAjusteBCIBSCBS { get; set; } = string.Empty;
 
         // Alíquotas e Valores
         public UfTax Uf { get; set; } = new UfTax();

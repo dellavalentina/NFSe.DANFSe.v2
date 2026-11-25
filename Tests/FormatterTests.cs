@@ -31,5 +31,28 @@ namespace NFSe.DANFSe.v2.Tests
             var result = Formatters.FormatDateTime(input);
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData("12345678000195", "12.345.678/0001-95")]
+        [InlineData("12ABC34501DE35", "12.ABC.345/01DE-35")]
+        [InlineData("12.abc.345/01de-35", "12.ABC.345/01DE-35")]
+        [InlineData("12345678909", "123.456.789-09")]
+        [InlineData("", "")]
+        public void TestFormatDocumentoSuportaCnpjAlfanumericoECpf(string input, string expected)
+        {
+            var result = Formatters.FormatDocumento(input);
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("0", "PIS/COFINS/CSLL - Não Retidos")]
+        [InlineData("3", "PIS/COFINS/CSLL - Retidos")]
+        [InlineData("4", "PIS/COFINS Retidos, CSLL Não Retido")]
+        [InlineData("9", "COFINS Não Retido, PIS/CSLL Retidos")]
+        public void TestFormatRetPisCofinsNovosCodigos(string input, string expected)
+        {
+            var result = Formatters.FormatRetPisCofins(input);
+            Assert.Equal(expected, result);
+        }
     }
 }

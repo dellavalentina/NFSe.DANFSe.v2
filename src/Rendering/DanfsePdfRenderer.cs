@@ -467,7 +467,7 @@ namespace NFSe.DANFSe.v2.Rendering
                 string calcBm = string.IsNullOrEmpty(_model.Valores.VCalcBM) ? "-" : Formatters.FormatCurrency(_model.Valores.VCalcBM);
                 DrawMetadataField("Trib.CalculoBM", calcBm, currentY);
 
-                string totalDed = string.IsNullOrEmpty(_model.Valores.VCalcDR) ? "-" : _model.Valores.VCalcDR;
+                string totalDed = string.IsNullOrEmpty(_model.Valores.VCalcDR) ? "-" : Formatters.FormatCurrency(_model.Valores.VCalcDR);
                 DrawMetadataField("Trib.Deducoes", totalDed, currentY);
                 DrawMetadataField("Trib.DescontoIncondicionado", "-", currentY);
 
@@ -541,9 +541,11 @@ namespace NFSe.DANFSe.v2.Rendering
             // Linha 2
             DrawText("Exclusões e Reduções da Base de Cálculo", fontBold6, BlackBrush, 0.40, currentY + 0.71, 4.50, 0.20, LeftAlign);
             
-            // Somatório de vDescIncond + vCalcReeRepRes + vISSQN + vPIS + vCOFINS conforme especificação oficial do DANFSe v2.0
+            // Somatório de vDescIncond + (vCalcReeRepRes / vCalcAjusteBCLocImoveis / vCalcAjusteBCIBSCBS) + vISSQN + vPIS + vCOFINS conforme especificação oficial do DANFSe v2.0
             double sumExclusoes = 0;
             if (double.TryParse(_model.IbsCbs.VCalcReeRepRes, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCalcReeRepRes)) sumExclusoes += vCalcReeRepRes;
+            if (double.TryParse(_model.IbsCbs.VCalcAjusteBCLocImoveis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCalcAjusteLoc)) sumExclusoes += vCalcAjusteLoc;
+            if (double.TryParse(_model.IbsCbs.VCalcAjusteBCIBSCBS, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCalcAjusteIbsCbs)) sumExclusoes += vCalcAjusteIbsCbs;
             if (double.TryParse(_model.Valores.VIssqn, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vIssqn)) sumExclusoes += vIssqn;
             if (double.TryParse(_model.Servico.VPis, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vPis)) sumExclusoes += vPis;
             if (double.TryParse(_model.Servico.VCofins, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double vCofins)) sumExclusoes += vCofins;

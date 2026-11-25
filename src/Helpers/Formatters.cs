@@ -22,19 +22,19 @@ namespace NFSe.DANFSe.v2.Helpers
         {
             if (string.IsNullOrEmpty(doc)) return doc;
 
-            // Remove caracteres não numéricos
-            doc = Regex.Replace(doc, @"[^\d]", "");
+            // Remove caracteres não alfanuméricos para suportar tanto CPF/CNPJ numérico quanto CNPJ Alfanumérico ([0-9A-Z]{14})
+            string cleanDoc = Regex.Replace(doc, @"[^0-9A-Za-z]", "").ToUpperInvariant();
 
-            if (doc.Length == 14)
+            if (cleanDoc.Length == 14)
             {
-                return Convert.ToUInt64(doc).ToString(@"00\.000\.000\/0000\-00");
+                return $"{cleanDoc.Substring(0, 2)}.{cleanDoc.Substring(2, 3)}.{cleanDoc.Substring(5, 3)}/{cleanDoc.Substring(8, 4)}-{cleanDoc.Substring(12, 2)}";
             }
-            else if (doc.Length == 11)
+            else if (cleanDoc.Length == 11 && Regex.IsMatch(cleanDoc, @"^\d{11}$"))
             {
-                return Convert.ToUInt64(doc).ToString(@"000\.000\.000\-00");
+                return $"{cleanDoc.Substring(0, 3)}.{cleanDoc.Substring(3, 3)}.{cleanDoc.Substring(6, 3)}-{cleanDoc.Substring(9, 2)}";
             }
 
-            return doc;
+            return cleanDoc;
         }
 
         public static string FormatCep(string cep)
@@ -246,9 +246,16 @@ namespace NFSe.DANFSe.v2.Helpers
         {
             return code switch
             {
-                "0" => "PIS/COFINS - Não Retido",
+                "0" => "PIS/COFINS/CSLL - Não Retidos",
                 "1" => "PIS/COFINS/CSLL - Retido pelo Tomador",
                 "2" => "PIS/COFINS/CSLL - Não Retido",
+                "3" => "PIS/COFINS/CSLL - Retidos",
+                "4" => "PIS/COFINS Retidos, CSLL Não Retido",
+                "5" => "PIS Retido, COFINS/CSLL Não Retido",
+                "6" => "COFINS Retido, PIS/CSLL Não Retido",
+                "7" => "PIS Não Retido, COFINS/CSLL Retidos",
+                "8" => "PIS/COFINS Não Retidos, CSLL Retido",
+                "9" => "COFINS Não Retido, PIS/CSLL Retidos",
                 _ => string.IsNullOrEmpty(code) ? "-" : code
             };
         }
